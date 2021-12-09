@@ -15,7 +15,7 @@
 **Using Composer**
 
 ```
-composer install fyre/cache
+composer require fyre/cache
 ```
 
 In PHP:
