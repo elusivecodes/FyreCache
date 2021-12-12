@@ -177,7 +177,7 @@ The Redis cacher can be loaded using custom configuration.
 - `$config` is an array containing configuration options.
     - `className` must be set to `\Fyre\Cache\Handlers\RedisCacher`.
     - `expire` is a number indicating the default cache timeout.
-    - `prefix` is a string representing the key prefix.
+    - `prefix` is a string representing the cache key prefix.
     - `host` is a string representing the Redis host, and will default to "*127.0.0.1*".
     - `password` is a string representing the Redis password
     - `port` is a number indicating the Redis port, and will default to *6379*.
@@ -198,7 +198,7 @@ The Memcached cacher can be loaded using custom configuration.
 - `$config` is an array containing configuration options.
     - `className` must be set to `\Fyre\Cache\Handlers\MemcachedCacher`.
     - `expire` is a number indicating the default cache timeout.
-    - `prefix` is a string representing the key prefix.
+    - `prefix` is a string representing the cache key prefix.
     - `host` is a string representing the Memcached host, and will default to "*127.0.0.1*".
     - `port` is a number indicating the Memcached port, and will default to *11211*.
     - `weight` is a number indicating the server weight, and will default to *1*.
@@ -218,7 +218,7 @@ The File cacher can be loaded using custom configuration.
 - `$config` is an array containing configuration options.
     - `className` must be set to `\Fyre\Cache\Handlers\FileCacher`.
     - `expire` is a number indicating the default cache timeout.
-    - `prefix` is a string representing the key prefix.
+    - `prefix` is a string representing the cache key prefix.
     - `path` is a string representing the directory path, and will default to "*/tmp/cache*".
     - `mode` is a number indicating the cache file permissions, and will default to *0640*.
 
