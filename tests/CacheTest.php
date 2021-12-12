@@ -12,7 +12,7 @@ use
 final class CacheTest extends TestCase
 {
 
-    public function testCacheLoad(): void
+    public function testLoad(): void
     {
         $this->assertInstanceOf(
             FileCacher::class,
@@ -22,7 +22,7 @@ final class CacheTest extends TestCase
         );
     }
 
-    public function testCacheLoadInvalidHandler(): void
+    public function testLoadInvalidHandler(): void
     {
         $this->expectException(CacheException::class);
 
@@ -31,7 +31,7 @@ final class CacheTest extends TestCase
         ]);
     }
 
-    public function testCacheUse(): void
+    public function testUse(): void
     {
         $handler1 = Cache::use();
         $handler2 = Cache::use();

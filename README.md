@@ -7,6 +7,9 @@
 - [Installation](#installation)
 - [Methods](#methods)
 - [Cachers](#cachers)
+    - [Redis](#redis)
+    - [Memcached](#memcached)
+    - [File](#file)
 
 
 
@@ -39,7 +42,7 @@ Cache::clear();
 
 Load an cacher.
 
-- `$config` is an array containing the configuration for the cacher.
+- `$config` is an array containing configuration options.
 
 ```php
 $cacher = Cache::load($config);
@@ -50,7 +53,7 @@ $cacher = Cache::load($config);
 Set the cacher config.
 
 - `$key` is a string representing the cacher key.
-- `$config` is an array containing configuration data.
+- `$config` is an array containing configuration options.
 
 ```php
 Cache::setConfig($key, $config);
@@ -70,11 +73,6 @@ $cacher = Cache::use($key);
 ## Cachers
 
 You can load a specific encrypter by specifying the `className` option of the `$config` variable above.
-
-The default cachers are:
-- `\Fyre\Cache\Handlers\FileCacher`
-- `\Fyre\Cache\Handlers\MemcachedCacher`
-- `\Fyre\Cache\Handlers\RedisCacher`
 
 Custom cachers can be created by extending `\Fyre\Cache\Cacher`, ensuring all below methods are implemented.
 
@@ -168,4 +166,64 @@ Get the size of the cache.
 
 ```php
 $size = $cacher->size();
+```
+
+
+### Redis
+
+The Redis cacher can be loaded using custom configuration.
+
+- `$key` is a string representing the cacher key.
+- `$config` is an array containing configuration options.
+    - `className` must be set to `\Fyre\Cache\Handlers\RedisCacher`.
+    - `expire` is a number indicating the default cache timeout.
+    - `prefix` is a string representing the key prefix.
+    - `host` is a string representing the Redis host, and will default to "*127.0.0.1*".
+    - `password` is a string representing the Redis password
+    - `port` is a number indicating the Redis port, and will default to *6379*.
+    - `database` is a string representing the Redis database.
+    - `timeout` is a number indicating the connection timeout.
+
+```php
+Cache::setConfig($key, $config);
+$cacher = Cache::use($key);
+```
+
+
+### Memcached
+
+The Memcached cacher can be loaded using custom configuration.
+
+- `$key` is a string representing the cacher key.
+- `$config` is an array containing configuration options.
+    - `className` must be set to `\Fyre\Cache\Handlers\MemcachedCacher`.
+    - `expire` is a number indicating the default cache timeout.
+    - `prefix` is a string representing the key prefix.
+    - `host` is a string representing the Memcached host, and will default to "*127.0.0.1*".
+    - `port` is a number indicating the Memcached port, and will default to *11211*.
+    - `weight` is a number indicating the server weight, and will default to *1*.
+
+
+```php
+Cache::setConfig($key, $config);
+$cacher = Cache::use($key);
+```
+
+
+### File
+
+The File cacher can be loaded using custom configuration.
+
+- `$key` is a string representing the cacher key.
+- `$config` is an array containing configuration options.
+    - `className` must be set to `\Fyre\Cache\Handlers\FileCacher`.
+    - `expire` is a number indicating the default cache timeout.
+    - `prefix` is a string representing the key prefix.
+    - `path` is a string representing the directory path, and will default to "*/tmp/cache*".
+    - `mode` is a number indicating the cache file permissions, and will default to *0640*.
+
+
+```php
+Cache::setConfig($key, $config);
+$cacher = Cache::use($key);
 ```
