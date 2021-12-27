@@ -4,35 +4,16 @@ declare(strict_types=1);
 namespace Fyre\Cache\Handlers;
 
 use
-    DirectoryIterator,
     Fyre\Cache\Cacher,
-    Fyre\Cache\Exceptions\CacheException;
-
-use const
-    DIRECTORY_SEPARATOR,
-    LOCK_EX;
+    Fyre\FileSystem\Exceptions\FileSystemException,
+    Fyre\FileSystem\File,
+    Fyre\FileSystem\Folder,
+    Fyre\Utility\Path;
 
 use function
-    chmod,
-    fclose,
-    filesize,
-    flock,
-    fopen,
-    fseek,
-    ftruncate,
-    is_dir,
-    is_file,
     is_numeric,
-    mkdir,
-    rmdir,
-    rtrim,
-    fwrite,
-    stream_get_contents,
-    strlen,
-    strpos,
-    substr,
+    serialize,
     time,
-    unlink,
     unserialize;
 
 /**
@@ -46,20 +27,17 @@ class FileCacher extends Cacher
         'mode' => 0640
     ];
 
+    protected Folder $folder;
+
     /**
      * New Cacher constructor.
      * @param array $config Options for the handler.
-     * @throws CacheException if the path is invalid.
      */
     public function __construct(array $config = [])
     {
         parent::__construct($config);
 
-        $this->config['path'] = rtrim($this->config['path'], DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-
-        if (!is_dir($this->config['path']) && !mkdir($this->config['path'], 0777, true)) {
-            throw CacheException::forInvalidPath($this->config['path']);
-        }
+        $this->folder = new Folder($this->config['path'], true);
     }
 
     /**
@@ -70,13 +48,15 @@ class FileCacher extends Cacher
     public function delete(string $key): bool
     {
         $key = $this->prepareKey($key);
-        $filePath = $this->config['path'].$key;
+        $filePath = Path::join($this->folder->path(), $key);
 
-        if (!is_file($filePath)) {
+        $file = new File($filePath);
+
+        if (!$file->exists()) {
             return false;
         }
 
-        unlink($filePath);
+        $file->delete();
 
         return true;
     }
@@ -87,11 +67,7 @@ class FileCacher extends Cacher
      */
     public function empty(): bool
     {
-        $files = $this->getFiles();
-
-        foreach ($files AS $filePath) {
-            @unlink($filePath);
-        }
+        $this->folder->empty();
 
         return true;
 	}
@@ -103,11 +79,13 @@ class FileCacher extends Cacher
      */
     public function get(string $key)
     {
-        $fp = $this->openFile($key);
+        $file = $this->getFile($key);
 
-        $value = $this->readData($fp);
+        $file->open('r');
 
-        $this->closeFile($fp);
+        $value = $this->readData($file);
+
+        $file->close();
 
         if ($value === null) {
             $this->delete($key);
@@ -124,11 +102,12 @@ class FileCacher extends Cacher
      */
     public function increment(string $key, int $amount = 1): int
     {
-        $fp = $this->openFile($key);
+        $file = $this->getFile($key);
 
-        $this->lockFile($fp);
+        $file->open('c');
+        $file->lock();
 
-        $value = $this->readData($fp);
+        $value = $this->readData($file);
 
         if (!is_numeric($value)) {
             $value = 0;
@@ -136,9 +115,12 @@ class FileCacher extends Cacher
 
         $value += $amount;
 
-        $this->writeData($fp, $value);
+        $file->truncate();
+        $file->rewind();
 
-        $this->closeFile($fp);
+        $this->writeData($file, $value);
+
+        $file->close();
 
         return $value;
     }
@@ -152,13 +134,14 @@ class FileCacher extends Cacher
      */
     public function save(string $key, $data, int|null $expire = null): bool
     {
-        $fp = $this->openFile($key);
+        $file = $this->getFile($key);
 
-        $this->lockFile($fp);
+        $file->open('w');
+        $file->lock();
 
-        $this->writeData($fp, $data, $expire);
+        $this->writeData($file, $data, $expire);
 
-        $this->closeFile($fp);
+        $file->close();
 
         return true;
     }
@@ -169,115 +152,60 @@ class FileCacher extends Cacher
      */
     public function size(): int
     {
-        $files = $this->getFiles();
-
-        $size = 0;
-
-        foreach ($files AS $filePath) {
-            $size += filesize($filePath);
-        }
-
-        return $size;
-    }
-
-    /**
-     * Close a file pointer.
-     * @param resource $fp The file pointer.
-     */
-    protected function closeFile($fp)
-    {
-        fclose($fp);
-    }
-
-    /**
-     * Get the files contained in the cache path.
-     * @return array The files.
-     */
-    protected function getFiles(): array
-    {
-        $contents = new DirectoryIterator($this->config['path']);
-
-        $files = [];
-        foreach ($contents AS $item) {
-            if (!$item->isFile()) {
-                continue;
-            }
-
-            if ($this->config['prefix'] && strpos($item->getFilename(), $this->config['prefix']) !== 0) {
-                continue;
-            }
-
-            $files[] = $item->getPathname();
-        }
-
-        return $files;
-    }
-
-    /**
-     * Lock a file pointer.
-     * @param resource $fp The file pointer.
-     */
-    protected function lockFile($fp)
-    {
-        flock($fp, LOCK_EX);
+        return $this->folder->size();
     }
 
     /**
      * Open a cache file (or create it if it doesn't exist).
      * @param string $key The cache key.
-     * @return resource The file pointer.
+     * @return File The File.
      */
-    protected function openFile(string $key)
+    protected function getFile(string $key): File
     {
         $key = $this->prepareKey($key);
-        $filePath = $this->config['path'].$key;
+        $filePath = Path::join($this->folder->path(), $key);
 
-        $dirname = dirname($filePath);
+        $file = new File($filePath, true);
 
-        if (!is_dir($dirname)) {
-            mkdir($dirname, 0777, true);
-        }
+        $file->chmod($this->config['mode']);
 
-        $fp = fopen($filePath, 'c+');
-
-        chmod($filePath, $this->config['mode']);
-
-        return $fp;
+        return $file;
     }
 
     /**
-     * Read data from a file pointer.
-     * @param resource The file pointer.
+     * Read data from a File.
+     * @param File $file The File.
      * @return mixed The file data.
      */
-    protected function readData($fp)
+    protected function readData(File $file)
     {
-        $contents = stream_get_contents($fp);
+        try {
+            $contents = $file->contents();
 
-        if (!$contents) {
+            if (!$contents) {
+                return null;
+            }
+
+            $data = unserialize($contents);
+
+            if ($data['expire'] && $data['expire'] <= time()) {
+                return null;
+            }
+
+            return $data['data'];
+        } catch (FileSystemException $e) {
             return null;
         }
-
-        $data = unserialize($contents);
-
-        if ($data['expire'] && $data['expire'] <= time()) {
-            return null;
-        }
-
-        return $data['data'];
     }
 
     /**
      * Write data to a file pointer.
-     * @param resource The file pointer.
+     * @param File $file The File.
      * @param mixed $data The data to cache.
      * @param int|null $expire The number of seconds the value will be valid.
      */
-    protected function writeData($fp, $data, int|null $expire = null)
+    protected function writeData(File $file, $data, int|null $expire = null): void
     {
-        ftruncate($fp, 0);
-        fseek($fp, 0);
-
         $expire ??= $this->config['expire'];
 
         if ($expire) {
@@ -289,14 +217,7 @@ class FileCacher extends Cacher
             'expire' => $expire
         ]);
 
-        $length = strlen($data);
-        for ($written = 0; $written < $length; $written += $result) {
-            $result = fwrite($fp, substr($data, $written));
-
-            if ($result === false) {
-                break;
-            }
-        }
+        $file->write($data);
     }
 
 }
