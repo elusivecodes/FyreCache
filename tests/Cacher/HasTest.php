@@ -13,16 +13,14 @@ trait HasTest
     {
         $this->cache->save('test', 1);
 
-        $this->assertEquals(
-            true,
+        $this->assertTrue(
             $this->cache->has('test')
         );
     }
 
     public function testHasMissing(): void
     {
-        $this->assertEquals(
-            false,
+        $this->assertFalse(
             $this->cache->has('test')
         );
     }

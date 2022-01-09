@@ -35,7 +35,7 @@ final class RedisTest extends TestCase
     {
         $this->cache->save('test', 'value');
 
-        $this->assertEquals(
+        $this->assertSame(
             859296,
             $this->cache->size()
         );
@@ -43,7 +43,7 @@ final class RedisTest extends TestCase
 
     public function testSizeEmpty(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             921024,
             $this->cache->size()
         );

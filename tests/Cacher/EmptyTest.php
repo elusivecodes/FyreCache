@@ -11,18 +11,15 @@ trait EmptyTest
         $this->cache->save('test1', 'value');
         $this->cache->save('test2', 'value');
 
-        $this->assertEquals(
-            true,
+        $this->assertTrue(
             $this->cache->empty()
         );
 
-        $this->assertEquals(
-            false,
+        $this->assertFalse(
             $this->cache->has('test')
         );
 
-        $this->assertEquals(
-            false,
+        $this->assertFalse(
             $this->cache->has('test2')
         );
     }

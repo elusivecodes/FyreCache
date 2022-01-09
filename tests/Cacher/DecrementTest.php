@@ -13,7 +13,7 @@ trait DecrementTest
     {
         $this->cache->save('test', 5);
 
-        $this->assertEquals(
+        $this->assertSame(
             4,
             $this->cache->decrement('test')
         );
@@ -23,7 +23,7 @@ trait DecrementTest
     {
         $this->cache->save('test', 10);
 
-        $this->assertEquals(
+        $this->assertSame(
             5,
             $this->cache->decrement('test', 5)
         );
@@ -34,7 +34,7 @@ trait DecrementTest
         $this->cache->save('test', 5);
         $this->cache->decrement('test');
 
-        $this->assertEquals(
+        $this->assertSame(
             4,
             $this->cache->get('test')
         );

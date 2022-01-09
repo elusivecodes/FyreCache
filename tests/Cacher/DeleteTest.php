@@ -13,21 +13,18 @@ trait DeleteTest
     {
         $this->cache->save('test', 'value');
 
-        $this->assertEquals(
-            true,
+        $this->assertTrue(
             $this->cache->delete('test')
         );
 
-        $this->assertEquals(
-            false,
+        $this->assertFalse(
             $this->cache->has('test')
         );
     }
 
     public function testDeleteMissing(): void
     {
-        $this->assertEquals(
-            false,
+        $this->assertFalse(
             $this->cache->delete('missing')
         );
     }

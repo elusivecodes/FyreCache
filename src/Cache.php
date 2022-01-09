@@ -30,31 +30,31 @@ abstract class Cache
 
     /**
      * Load a handler.
-     * @param array $config Options for the handler.
+     * @param array $options Options for the handler.
      * @return Cacher The handler.
      * @throws CacheException if the handler is invalid.
      */
-    public static function load(array $config = []): Cacher
+    public static function load(array $options = []): Cacher
     {
-        if (!array_key_exists('className', $config)) {
+        if (!array_key_exists('className', $options)) {
             throw CacheException::forInvalidClass();
         }
 
-        if (!class_exists($config['className'], true)) {
-            throw CacheException::forInvalidClass($config['className']);
+        if (!class_exists($options['className'], true)) {
+            throw CacheException::forInvalidClass($options['className']);
         }
 
-        return new $config['className']($config);
+        return new $options['className']($options);
     }
 
     /**
      * Set handler config.
      * @param string $key The config key.
-     * @param array $config The config options.
+     * @param array $options The config options.
      */
-    public static function setConfig(string $key, array $config): void
+    public static function setConfig(string $key, array $options): void
     {
-        static::$config[$key] = $config;
+        static::$config[$key] = $options;
     }
 
     /**

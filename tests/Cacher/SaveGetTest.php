@@ -13,7 +13,7 @@ trait SaveGetTest
     {
         $this->cache->save('test', ['key' => 'value']);
 
-        $this->assertEquals(
+        $this->assertSame(
             ['key' => 'value'],
             $this->cache->get('test')
         );
@@ -35,7 +35,7 @@ trait SaveGetTest
     {
         $this->cache->save('test', 'value');
 
-        $this->assertEquals(
+        $this->assertSame(
             'value',
             $this->cache->get('test')
         );
@@ -45,7 +45,7 @@ trait SaveGetTest
     {
         $this->cache->save('test', 5);
 
-        $this->assertEquals(
+        $this->assertSame(
             5,
             $this->cache->get('test')
         );
@@ -55,7 +55,7 @@ trait SaveGetTest
     {
         $this->cache->save('test', .5);
 
-        $this->assertEquals(
+        $this->assertSame(
             .5,
             $this->cache->get('test')
         );
@@ -65,8 +65,7 @@ trait SaveGetTest
     {
         $this->cache->save('test', true);
 
-        $this->assertEquals(
-            true,
+        $this->assertTrue(
             $this->cache->get('test')
         );
     }
@@ -75,8 +74,7 @@ trait SaveGetTest
     {
         $this->cache->save('test', false);
 
-        $this->assertEquals(
-            false,
+        $this->assertFalse(
             $this->cache->get('test')
         );
     }
@@ -87,16 +85,14 @@ trait SaveGetTest
 
         sleep(2);
 
-        $this->assertEquals(
-            null,
+        $this->assertNull(
             $this->cache->get('test')
         );
     }
 
     public function testGetMissing(): void
     {
-        $this->assertEquals(
-            null,
+        $this->assertNull(
             $this->cache->get('test')
         );
     }

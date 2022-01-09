@@ -13,7 +13,7 @@ trait RememberTest
     {
         $this->cache->save('test', 1);
 
-        $this->assertEquals(
+        $this->assertSame(
             1,
             $this->cache->remember('test', fn() => 2)
         );
@@ -21,7 +21,7 @@ trait RememberTest
 
     public function testRememberMissing(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             2,
             $this->cache->remember('test', fn() => 2)
         );
@@ -31,7 +31,7 @@ trait RememberTest
     {
         $this->cache->remember('test', fn() => 2);
 
-        $this->assertEquals(
+        $this->assertSame(
             2,
             $this->cache->get('test')
         );
@@ -43,8 +43,7 @@ trait RememberTest
 
         sleep(2);
 
-        $this->assertEquals(
-            null,
+        $this->assertNull(
             $this->cache->get('test')
         );
     }

@@ -11,7 +11,7 @@ trait IncrementTest
 
     public function testIncrement(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             1,
             $this->cache->increment('test')
         );
@@ -19,7 +19,7 @@ trait IncrementTest
 
     public function testIncrementAmount(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             5,
             $this->cache->increment('test', 5)
         );
@@ -40,7 +40,7 @@ trait IncrementTest
         $this->cache->save('test', 5);
         $this->cache->increment('test');
 
-        $this->assertEquals(
+        $this->assertSame(
             6,
             $this->cache->get('test')
         );

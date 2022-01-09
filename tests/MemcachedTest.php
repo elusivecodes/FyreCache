@@ -35,7 +35,7 @@ final class MemcachedTest extends TestCase
     {
         $this->cache->save('test', 'value');
 
-        $this->assertEquals(
+        $this->assertSame(
             75,
             $this->cache->size()
         );
@@ -43,7 +43,7 @@ final class MemcachedTest extends TestCase
 
     public function testSizeEmpty(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             75,
             $this->cache->size()
         );

@@ -37,7 +37,7 @@ final class FileTest extends TestCase
     {
         $this->cache->save('test', 'value');
 
-        $this->assertEquals(
+        $this->assertSame(
             44,
             $this->cache->size()
         );
@@ -45,7 +45,7 @@ final class FileTest extends TestCase
 
     public function testSizeEmpty(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $this->cache->size()
         );
