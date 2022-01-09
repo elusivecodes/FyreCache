@@ -31,11 +31,11 @@ class FileCacher extends Cacher
 
     /**
      * New Cacher constructor.
-     * @param array $config Options for the handler.
+     * @param array $options Options for the handler.
      */
-    public function __construct(array $config = [])
+    public function __construct(array $options = [])
     {
-        parent::__construct($config);
+        parent::__construct($options);
 
         $this->folder = new Folder($this->config['path'], true);
     }

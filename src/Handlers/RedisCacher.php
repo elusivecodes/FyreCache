@@ -33,12 +33,12 @@ class RedisCacher extends Cacher
 
     /**
      * New Cacher constructor.
-     * @param array $config Options for the handler.
+     * @param array $options Options for the handler.
      * @throws CacheException if the path is invalid.
      */
-    public function __construct(array $config)
+    public function __construct(array $options)
     {
-        parent::__construct($config);
+        parent::__construct($options);
 
         try {
             $this->connection = new Redis();
