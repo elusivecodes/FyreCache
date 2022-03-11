@@ -32,11 +32,11 @@ abstract class Cache
     /**
      * Get the key for a cacher instance.
      * @param Cacher $cacher The Cacher.
-     * @return string|null The Cacher key.
+     * @return string|null The cacher key.
      */
     public static function getKey(Cacher $cacher): string|null
     {
-        return array_search($cacher, $this->instances, true) ?: null;
+        return array_search($cacher, static::$instances, true) ?: null;
     }
 
     /**
