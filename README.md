@@ -38,6 +38,16 @@ Clear instances.
 Cache::clear();
 ```
 
+**Get Key**
+
+Get the key for a cacher instance.
+
+- `$cacher` is a *Cacher*.
+
+```php
+$key = Cache::getKey($cacher);
+```
+
 **Load**
 
 Load an cacher.

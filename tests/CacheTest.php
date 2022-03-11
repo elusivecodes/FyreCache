@@ -12,6 +12,28 @@ use
 final class CacheTest extends TestCase
 {
 
+    public function getKey(): void
+    {
+        $handler = Cache::use();
+
+        $this->assertSame(
+            'default',
+            Cache::getKey($handler)
+        );
+    }
+
+    public function getKeyInvalid(): void
+    {
+        $handler = Cache::load([
+            'className' => FileCacher::class
+        ]);
+
+        $this->assertSame(
+            null,
+            Cache::getKey($handler)
+        );
+    }
+
     public function testLoad(): void
     {
         $this->assertInstanceOf(

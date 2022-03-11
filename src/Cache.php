@@ -8,6 +8,7 @@ use
 
 use function
     array_key_exists,
+    array_search,
     class_exists;
 
 /**
@@ -26,6 +27,16 @@ abstract class Cache
     public static function clear(): void
     {
         static::$instances = [];
+    }
+
+    /**
+     * Get the key for a cacher instance.
+     * @param Cacher $cacher The Cacher.
+     * @return string|null The Cacher key.
+     */
+    public static function getKey(Cacher $cacher): string|null
+    {
+        return array_search($cacher, $this->instances, true) ?: null;
     }
 
     /**
