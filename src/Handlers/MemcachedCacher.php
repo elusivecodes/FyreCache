@@ -100,7 +100,7 @@ class MemcachedCacher extends Cacher
      * @param string $key The cache key.
      * @return mixed The cache value.
      */
-    public function get(string $key)
+    public function get(string $key): mixed
     {
         $key = $this->prepareKey($key);
 
@@ -133,7 +133,7 @@ class MemcachedCacher extends Cacher
      * @param int|null $expire The number of seconds the value will be valid.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
-    public function save(string $key, $value, int|null $expire = null): bool
+    public function save(string $key, mixed $value, int|null $expire = null): bool
     {
         $key = $this->prepareKey($key);
 

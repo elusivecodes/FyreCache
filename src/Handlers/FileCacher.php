@@ -77,7 +77,7 @@ class FileCacher extends Cacher
      * @param string $key The cache key.
      * @return mixed The cache value.
      */
-    public function get(string $key)
+    public function get(string $key): mixed
     {
         $file = $this->getFile($key);
 
@@ -132,7 +132,7 @@ class FileCacher extends Cacher
      * @param int|null $expire The number of seconds the value will be valid.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
-    public function save(string $key, $data, int|null $expire = null): bool
+    public function save(string $key, mixed $data, int|null $expire = null): bool
     {
         $file = $this->getFile($key);
 
@@ -177,7 +177,7 @@ class FileCacher extends Cacher
      * @param File $file The File.
      * @return mixed The file data.
      */
-    protected function readData(File $file)
+    protected function readData(File $file): mixed
     {
         try {
             $contents = $file->contents();
@@ -204,7 +204,7 @@ class FileCacher extends Cacher
      * @param mixed $data The data to cache.
      * @param int|null $expire The number of seconds the value will be valid.
      */
-    protected function writeData(File $file, $data, int|null $expire = null): void
+    protected function writeData(File $file, mixed $data, int|null $expire = null): void
     {
         $expire ??= $this->config['expire'];
 

@@ -63,7 +63,7 @@ abstract class Cacher
      * @param string $key The cache key.
      * @return mixed The cache value.
      */
-    abstract public function get(string $key);
+    abstract public function get(string $key): mixed;
 
     /**
      * Get the config.
@@ -99,7 +99,7 @@ abstract class Cacher
      * @param int|null $expire The number of seconds the value will be valid.
      * @return mixed The cache value.
      */
-    public function remember(string $key, Closure $callback, int|null $expire = null)
+    public function remember(string $key, Closure $callback, int|null $expire = null): mixed
     {
         $value = $this->get($key);
 
@@ -121,7 +121,7 @@ abstract class Cacher
      * @param int|null $expire The number of seconds the value will be valid.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
-    abstract public function save(string $key, $data, int|null $expire = null): bool;
+    abstract public function save(string $key, mixed $data, int|null $expire = null): bool;
 
     /**
      * Get the size of the cache.
