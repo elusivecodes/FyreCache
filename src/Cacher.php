@@ -27,7 +27,7 @@ abstract class Cacher
 
     /**
      * New Cacher constructor.
-     * @param array $config Options for the handler.
+     * @param array $options Options for the handler.
      */
     public function __construct(array $options = [])
     {
