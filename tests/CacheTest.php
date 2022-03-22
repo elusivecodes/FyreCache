@@ -12,6 +12,32 @@ use
 final class CacheTest extends TestCase
 {
 
+    public function getConfig(): void
+    {
+        $this->assertSame(
+            [
+                'default' => [
+                    'className' => FileCacher::class,
+                    'path' => 'cache',
+                    'prefix' => 'prefix.'
+                ]
+            ],
+            Cache::getConfig()
+        );
+    }
+
+    public function getConfigKey(): void
+    {
+        $this->assertSame(
+            [
+                'className' => FileCacher::class,
+                'path' => 'cache',
+                'prefix' => 'prefix.'
+            ],
+            Cache::getConfig('default')
+        );
+    }
+
     public function getKey(): void
     {
         $handler = Cache::use();
@@ -53,6 +79,31 @@ final class CacheTest extends TestCase
         ]);
     }
 
+    public function testSetConfig(): void
+    {
+        Cache::setConfig([
+            'test' => [
+                'className' => FileCacher::class
+            ]
+        ]);
+
+        $this->assertSame(
+            [
+                'className' => FileCacher::class
+            ],
+            Cache::getConfig('test')
+        );
+    }
+
+    public function testSetConfigExists(): void
+    {
+        $this->expectException(CacheException::class);
+
+        Cache::setConfig('default', [
+            'className' => FileCacher::class
+        ]);
+    }
+
     public function testUse(): void
     {
         $handler1 = Cache::use();
@@ -71,7 +122,7 @@ final class CacheTest extends TestCase
         Cache::clear();
 
         Cache::setConfig('default', [
-            'className' =>  FileCacher::class,
+            'className' => FileCacher::class,
             'path' => 'cache',
             'prefix' => 'prefix.'
         ]);

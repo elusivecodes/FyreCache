@@ -54,7 +54,7 @@ final class RedisTest extends TestCase
         $this->expectException(CacheException::class);
 
         Cache::load([
-            'className' =>  RedisCacher::class,
+            'className' => RedisCacher::class,
             'host' => '1.1.1.1'
         ]);
     }
@@ -64,7 +64,7 @@ final class RedisTest extends TestCase
         $this->expectException(CacheException::class);
 
         Cache::load([
-            'className' =>  RedisCacher::class,
+            'className' => RedisCacher::class,
             'host' => getenv('REDIS_HOST'),
             'password' => 'invalid'
         ]);
@@ -74,7 +74,7 @@ final class RedisTest extends TestCase
     {
         Cache::clear();
         Cache::setConfig('default', [
-            'className' =>  RedisCacher::class,
+            'className' => RedisCacher::class,
             'host' => getenv('REDIS_HOST'),
             'password' => getenv('REDIS_PASSWORD'),
             'database' => getenv('REDIS_DATABASE'),

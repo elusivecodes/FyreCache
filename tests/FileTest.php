@@ -55,7 +55,7 @@ final class FileTest extends TestCase
     {
         Cache::clear();
         Cache::setConfig('default', [
-            'className' =>  FileCacher::class,
+            'className' => FileCacher::class,
             'path' => 'cache',
             'prefix' => 'prefix.'
         ]);

@@ -54,7 +54,7 @@ final class MemcachedTest extends TestCase
         $this->expectException(CacheException::class);
 
         Cache::load([
-            'className' =>  MemcachedCacher::class,
+            'className' => MemcachedCacher::class,
             'host' => '1.1.1.1'
         ]);
     }
@@ -63,7 +63,7 @@ final class MemcachedTest extends TestCase
     {
         Cache::clear();
         Cache::setConfig('default', [
-            'className' =>  MemcachedCacher::class,
+            'className' => MemcachedCacher::class,
             'host' => getenv('MEMCACHED_HOST'),
             'port' => getenv('MEMCACHED_PORT'),
             'prefix' => 'prefix.'
