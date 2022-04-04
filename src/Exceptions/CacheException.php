@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace Fyre\Cache\Exceptions;
 
 use
-    RunTimeException;
+    Fyre\Error\Exceptions\Exception;
 
 /**
  * CacheException
  */
-class CacheException extends RunTimeException
+class CacheException extends Exception
 {
 
     public static function forAuthFailed()
