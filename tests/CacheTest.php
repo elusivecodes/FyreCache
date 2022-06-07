@@ -12,7 +12,7 @@ use
 final class CacheTest extends TestCase
 {
 
-    public function getConfig(): void
+    public function testGetConfig(): void
     {
         $this->assertSame(
             [
@@ -26,7 +26,7 @@ final class CacheTest extends TestCase
         );
     }
 
-    public function getConfigKey(): void
+    public function testGetConfigKey(): void
     {
         $this->assertSame(
             [
@@ -38,7 +38,7 @@ final class CacheTest extends TestCase
         );
     }
 
-    public function getKey(): void
+    public function testGetKey(): void
     {
         $handler = Cache::use();
 
@@ -48,7 +48,7 @@ final class CacheTest extends TestCase
         );
     }
 
-    public function getKeyInvalid(): void
+    public function testGetKeyInvalid(): void
     {
         $handler = Cache::load([
             'className' => FileCacher::class
