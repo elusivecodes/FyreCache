@@ -32,6 +32,11 @@ class CacheException extends RuntimeException
         return new static('Cache handler connection failed');
     }
 
+    public static function forInvalidClass(string $className = '')
+    {
+        return new static('Cache handler class not found: '.$className);
+    }
+
     public static function forInvalidConfig(string $key)
     {
         return new static('Cache handler invalid config: '.$key);
@@ -45,11 +50,6 @@ class CacheException extends RuntimeException
     public static function forInvalidKey(string $key)
     {
         return new static('Cache handler invalid key: '.$key);
-    }
-
-    public static function forInvalidClass(string $className = '')
-    {
-        return new static('Cache handler class not found: '.$className);
     }
 
 }
