@@ -66,7 +66,7 @@ $key = Cache::getKey($cacher);
 
 **Load**
 
-Load an cacher.
+Load a cacher.
 
 - `$options` is an array containing configuration options.
 
