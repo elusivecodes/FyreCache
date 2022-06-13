@@ -40,9 +40,9 @@ Cache::clear();
 
 **Get Config**
 
-Set a cacher config.
+Set a [*Cacher*](#cachers) config.
 
-- `$key` is a string representing the cacher key.
+- `$key` is a string representing the [*Cacher*](#cachers) key.
 
 ```php
 $config = Cache::getConfig($key);
@@ -56,9 +56,9 @@ $config = Cache::getConfig();
 
 **Get Key**
 
-Get the key for a cacher instance.
+Get the key for a [*Cacher*](#cachers) instance.
 
-- `$cacher` is a *Cacher*.
+- `$cacher` is a [*Cacher*](#cachers).
 
 ```php
 $key = Cache::getKey($cacher);
@@ -66,7 +66,7 @@ $key = Cache::getKey($cacher);
 
 **Load**
 
-Load a cacher.
+Load a [*Cacher*](#cachers).
 
 - `$options` is an array containing configuration options.
 
@@ -76,9 +76,9 @@ $cacher = Cache::load($options);
 
 **Set Config**
 
-Set the cacher config.
+Set the [*Cacher*](#cachers) config.
 
-- `$key` is a string representing the cacher key.
+- `$key` is a string representing the [*Cacher*](#cachers) key.
 - `$options` is an array containing configuration options.
 
 ```php
@@ -93,9 +93,9 @@ Cache::setConfig($config);
 
 **Unload**
 
-Unload a cacher.
+Unload a [*Cacher*](#cachers).
 
-- `$key` is a string representing the cacher key, and will default to *"default"*.
+- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to *"default"*.
 
 ```php
 Cache::unload($key);
@@ -103,9 +103,9 @@ Cache::unload($key);
 
 **Use**
 
-Load a shared cacher instance.
+Load a shared [*Cacher*](#cachers) instance.
 
-- `$key` is a string representing the cacher key, and will default to *"default"*.
+- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to *"default"*.
 
 ```php
 $cacher = Cache::use($key);
@@ -260,7 +260,7 @@ The Redis cacher can be loaded using custom configuration.
     - `expire` is a number indicating the default cache timeout.
     - `prefix` is a string representing the cache key prefix.
     - `host` is a string representing the Redis host, and will default to "*127.0.0.1*".
-    - `password` is a string representing the Redis password
+    - `password` is a string representing the Redis password.
     - `port` is a number indicating the Redis port, and will default to *6379*.
     - `database` is a string representing the Redis database.
     - `timeout` is a number indicating the connection timeout.
