@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace Fyre\Cache\Handlers;
 
-use
-    Fyre\Cache\Cacher,
-    Fyre\Cache\Exceptions\CacheException,
-    Exception,
-    Memcached;
+use Fyre\Cache\Cacher;
+use Fyre\Cache\Exceptions\CacheException;
+use Exception;
+use Memcached;
 
 /**
  * MemcachedCacher

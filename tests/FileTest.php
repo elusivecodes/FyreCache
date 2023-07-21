@@ -3,35 +3,32 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use
-    Fyre\Cache\Cache,
-    Fyre\Cache\Cacher,
-    Fyre\Cache\Handlers\FileCacher,
-    PHPUnit\Framework\TestCase,
-    Tests\Cacher\DecrementTest,
-    Tests\Cacher\DeleteTest,
-    Tests\Cacher\EmptyTest,
-    Tests\Cacher\HasTest,
-    Tests\Cacher\IncrementTest,
-    Tests\Cacher\Remembertest,
-    Tests\Cacher\SaveGetTest;
+use Fyre\Cache\Cache;
+use Fyre\Cache\Cacher;
+use Fyre\Cache\Handlers\FileCacher;
+use PHPUnit\Framework\TestCase;
+use Tests\Cacher\DecrementTestTrait;
+use Tests\Cacher\DeleteTestTrait;
+use Tests\Cacher\EmptyTestTrait;
+use Tests\Cacher\HasTestTrait;
+use Tests\Cacher\IncrementTestTrait;
+use Tests\Cacher\RemembertestTrait;
+use Tests\Cacher\SaveGetTestTrait;
 
-use function
-    rmdir;
+use function rmdir;
 
 final class FileTest extends TestCase
 {
 
     protected Cacher $cache;
 
-    use
-        DecrementTest,
-        DeleteTest,
-        EmptyTest,
-        HasTest,
-        IncrementTest,
-        Remembertest,
-        SaveGetTest;
+    use DecrementTestTrait;
+    use DeleteTestTrait;
+    use EmptyTestTrait;
+    use HasTestTrait;
+    use IncrementTestTrait;
+    use RemembertestTrait;
+    use SaveGetTestTrait;
 
     public function testSize(): void
     {

@@ -3,17 +3,15 @@ declare(strict_types=1);
 
 namespace Fyre\Cache\Handlers;
 
-use
-    Fyre\Cache\Cacher,
-    Fyre\Cache\Exceptions\CacheException,
-    Redis,
-    RedisException;
+use Fyre\Cache\Cacher;
+use Fyre\Cache\Exceptions\CacheException;
+use Redis;
+use RedisException;
 
-use function
-    gettype,
-    serialize,
-    time,
-    unserialize;
+use function gettype;
+use function serialize;
+use function time;
+use function unserialize;
 
 /**
  * RedisCacher

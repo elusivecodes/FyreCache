@@ -3,14 +3,12 @@ declare(strict_types=1);
 
 namespace Fyre\Cache;
 
-use
-    Closure,
-    Fyre\Cache\Exceptions\CacheException;
+use Closure;
+use Fyre\Cache\Exceptions\CacheException;
 
-use function
-    array_replace_recursive,
-    call_user_func,
-    strpbrk;
+use function array_replace;
+use function call_user_func;
+use function strpbrk;
 
 /**
  * Cacher
@@ -31,7 +29,7 @@ abstract class Cacher
      */
     public function __construct(array $options = [])
     {
-        $this->config = array_replace_recursive(self::$defaults, static::$defaults, $options);
+        $this->config = array_replace(self::$defaults, static::$defaults, $options);
     }
 
     /**

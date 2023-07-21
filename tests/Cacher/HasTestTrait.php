@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace Tests\Cacher;
 
-use
-    Fyre\Cache\Exceptions\CacheException;
+use Fyre\Cache\Exceptions\CacheException;
 
-trait HasTest
+trait HasTestTrait
 {
 
     public function testHas(): void

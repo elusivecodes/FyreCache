@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Cacher;
 
-trait EmptyTest
+trait EmptyTestTrait
 {
 
     public function testEmpty(): void

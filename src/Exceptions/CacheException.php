@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace Fyre\Cache\Exceptions;
 
-use
-    RuntimeException;
+use RuntimeException;
 
 /**
  * CacheException
@@ -35,11 +34,6 @@ class CacheException extends RuntimeException
     public static function forInvalidClass(string $className = '')
     {
         return new static('Cache handler class not found: '.$className);
-    }
-
-    public static function forInvalidConfig(string $key)
-    {
-        return new static('Cache handler invalid config: '.$key);
     }
 
     public static function forInvalidDatabase(string $database)

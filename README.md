@@ -40,18 +40,12 @@ Cache::clear();
 
 **Get Config**
 
-Set a [*Cacher*](#cachers) config.
+Get a [*Cacher*](#cachers) config.
 
 - `$key` is a string representing the [*Cacher*](#cachers) key.
 
 ```php
 $config = Cache::getConfig($key);
-```
-
-Alternatively, if the `$key` argument is omitted an array containing all configurations will be returned.
-
-```php
-$config = Cache::getConfig();
 ```
 
 **Get Key**
@@ -62,6 +56,36 @@ Get the key for a [*Cacher*](#cachers) instance.
 
 ```php
 $key = Cache::getKey($cacher);
+```
+
+**Has Config**
+
+Check if a [*Cacher*](#cachers) config exists.
+
+- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `Cache::DEFAULT`.
+
+```php
+$hasConfig = Cache::hasConfig($key);
+```
+
+**Init Config**
+
+Initialize a set of config options.
+
+- `$config` is an array containing key/value pairs of config options.
+
+```php
+Cache::initConfig($config);
+```
+
+**Is Loaded**
+
+Check if a [*Cacher*](#cachers) instance is loaded.
+
+- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `Cache::DEFAULT`.
+
+```php
+$isLoaded = Cache::isLoaded($key);
 ```
 
 **Load**
@@ -83,12 +107,6 @@ Set the [*Cacher*](#cachers) config.
 
 ```php
 Cache::setConfig($key, $options);
-```
-
-Alternatively, a single array can be provided containing key/value of configuration options.
-
-```php
-Cache::setConfig($config);
 ```
 
 **Unload**

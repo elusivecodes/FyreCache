@@ -3,18 +3,16 @@ declare(strict_types=1);
 
 namespace Fyre\Cache\Handlers;
 
-use
-    Fyre\Cache\Cacher,
-    Fyre\FileSystem\Exceptions\FileSystemException,
-    Fyre\FileSystem\File,
-    Fyre\FileSystem\Folder,
-    Fyre\Utility\Path;
+use Fyre\Cache\Cacher;
+use Fyre\FileSystem\Exceptions\FileSystemException;
+use Fyre\FileSystem\File;
+use Fyre\FileSystem\Folder;
+use Fyre\Utility\Path;
 
-use function
-    is_numeric,
-    serialize,
-    time,
-    unserialize;
+use function is_numeric;
+use function serialize;
+use function time;
+use function unserialize;
 
 /**
  * FileCacher

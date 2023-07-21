@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace Tests\Cacher;
 
-use
-    Fyre\Cache\Exceptions\CacheException;
+use Fyre\Cache\Exceptions\CacheException;
 
-trait SaveGetTest
+trait SaveGetTestTrait
 {
 
     public function testSaveGetArray(): void
