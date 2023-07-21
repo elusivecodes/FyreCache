@@ -1,6 +1,6 @@
 # FyreCache
 
-**FyreCache** is a free, cache library for *PHP*.
+**FyreCache** is a free, open-source cache library for *PHP*.
 
 
 ## Table Of Contents
