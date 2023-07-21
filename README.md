@@ -113,7 +113,7 @@ Cache::setConfig($key, $options);
 
 Unload a [*Cacher*](#cachers).
 
-- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to *"default"*.
+- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `Cache::DEFAULT`.
 
 ```php
 Cache::unload($key);
@@ -123,7 +123,7 @@ Cache::unload($key);
 
 Load a shared [*Cacher*](#cachers) instance.
 
-- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to *"default"*.
+- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `Cache::DEFAULT`.
 
 ```php
 $cacher = Cache::use($key);
