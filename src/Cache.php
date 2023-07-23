@@ -33,11 +33,15 @@ abstract class Cache
 
     /**
      * Get the handler config.
-     * @param string $key The config key.
+     * @param string|null $key The config key.
      * @return array|null
      */
-    public static function getConfig(string $key = self::DEFAULT): array|null
+    public static function getConfig(string|null $key = null): array|null
     {
+        if ($key === null) {
+            return static::$config;
+        }
+
         return static::$config[$key] ?? null;
     }
 
@@ -59,17 +63,6 @@ abstract class Cache
     public static function hasConfig(string $key = self::DEFAULT): bool
     {
         return array_key_exists($key, static::$config);
-    }
-
-    /**
-     * Initialize a set of configuration options.
-     * @param array $config The configuration options.
-     */
-    public static function initConfig(array $config): void
-    {
-        foreach ($config AS $key => $options) {
-            static::setConfig($key, $options);
-        }
     }
 
     /**
@@ -103,12 +96,24 @@ abstract class Cache
 
     /**
      * Set handler config.
-     * @param string $key The config key.
-     * @param array $options The config options.
+     * @param string|array $key The config key.
+     * @param array|null $options The config options.
      * @throws CacheException if the config is invalid.
      */
-    public static function setConfig(string $key, array $options): void
+    public static function setConfig(string|array $key, array|null $options = null): void
     {
+        if (is_array($key)) {
+            foreach ($key AS $k => $v) {
+                static::setConfig($k, $v);
+            }
+
+            return;
+        }
+
+        if ($options === null) {
+            throw CacheException::forInvalidConfig($key);
+        }
+
         if (array_key_exists($key, static::$config)) {
             throw CacheException::forConfigExists($key);
         }

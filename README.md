@@ -48,6 +48,12 @@ Get a [*Cacher*](#cachers) config.
 $config = Cache::getConfig($key);
 ```
 
+Alternatively, if the `$key` argument is omitted an array containing all configurations will be returned.
+
+```php
+$config = Cache::getConfig();
+```
+
 **Get Key**
 
 Get the key for a [*Cacher*](#cachers) instance.
@@ -66,16 +72,6 @@ Check if a [*Cacher*](#cachers) config exists.
 
 ```php
 $hasConfig = Cache::hasConfig($key);
-```
-
-**Init Config**
-
-Initialize a set of config options.
-
-- `$config` is an array containing key/value pairs of config options.
-
-```php
-Cache::initConfig($config);
 ```
 
 **Is Loaded**
@@ -107,6 +103,12 @@ Set the [*Cacher*](#cachers) config.
 
 ```php
 Cache::setConfig($key, $options);
+```
+
+Alternatively, a single array can be provided containing key/value of configuration options.
+
+```php
+Cache::setConfig($config);
 ```
 
 **Unload**

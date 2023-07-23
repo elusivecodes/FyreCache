@@ -15,9 +15,16 @@ final class CacheTest extends TestCase
     {
         $this->assertSame(
             [
-                'className' => FileCacher::class,
-                'path' => 'cache',
-                'prefix' => 'prefix.'
+                'default' => [
+                    'className' => FileCacher::class,
+                    'path' => 'cache',
+                    'prefix' => 'prefix.'
+                ],
+                'data' => [
+                    'className' => FileCacher::class,
+                    'path' => 'data',
+                    'prefix' => 'data.'
+                ]
             ],
             Cache::getConfig()
         );
@@ -179,7 +186,7 @@ final class CacheTest extends TestCase
     {
         Cache::clear();
 
-        Cache::initConfig([
+        Cache::setConfig([
             'default' => [
                 'className' => FileCacher::class,
                 'path' => 'cache',
