@@ -36,6 +36,11 @@ class CacheException extends RuntimeException
         return new static('Cache handler class not found: '.$className);
     }
 
+    public static function forInvalidConfig(string $key)
+    {
+        return new static('Cache handler invalid config: '.$key);
+    }
+
     public static function forInvalidDatabase(string $database)
     {
         return new static('Cache handler invalid database: '.$database);
