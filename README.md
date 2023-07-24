@@ -118,7 +118,7 @@ Unload a [*Cacher*](#cachers).
 - `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `Cache::DEFAULT`.
 
 ```php
-Cache::unload($key);
+$unloaded = Cache::unload($key);
 ```
 
 **Use**
