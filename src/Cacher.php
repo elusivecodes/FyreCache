@@ -131,6 +131,7 @@ abstract class Cacher
      * Get the real cache key.
      * @param string $key The cache key.
      * @return string The real cache key.
+     * @throws CacheException if the handler is not valid.
      */
     protected function prepareKey(string $key): string
     {
