@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Fyre\Cache;
 
 use Fyre\Cache\Exceptions\CacheException;
+use Fyre\Cache\Handlers\NullCacher;
 
 use function array_key_exists;
 use function array_search;
@@ -22,6 +23,10 @@ abstract class Cache
 
     protected static array $instances = [];
 
+    protected static NullCacher $nullCacher;
+
+    protected static bool $enabled = true;
+
     /**
      * Clear all instances and configs.
      */
@@ -29,6 +34,22 @@ abstract class Cache
     {
         static::$config = [];
         static::$instances = [];
+    }
+
+    /**
+     * Disable the cache.
+     */
+    public static function disable(): void
+    {
+        static::$enabled = false;
+    }
+
+    /**
+     * Enable the cache.
+     */
+    public static function enable(): void
+    {
+        static::$enabled = true;
     }
 
     /**
@@ -63,6 +84,15 @@ abstract class Cache
     public static function hasConfig(string $key = self::DEFAULT): bool
     {
         return array_key_exists($key, static::$config);
+    }
+
+    /**
+     * Determine if the cache is enabled.
+     * @return bool TRUE if the cache is enabled, otherwise FALSE.
+     */
+    public static function isEnabled(): bool
+    {
+        return static::$enabled;
     }
 
     /**
@@ -145,6 +175,10 @@ abstract class Cache
      */
     public static function use(string $key = self::DEFAULT): Cacher
     {
+        if (!static::$enabled) {
+            return static::$nullCacher ??= new NullCacher();
+        }
+
         return static::$instances[$key] ??= static::load(static::$config[$key] ?? []);
     }
 

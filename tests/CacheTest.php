@@ -6,10 +6,40 @@ namespace Tests;
 use Fyre\Cache\Cache;
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\FileCacher;
+use Fyre\Cache\Handlers\NullCacher;
 use PHPUnit\Framework\TestCase;
 
 final class CacheTest extends TestCase
 {
+
+    public function testDisable(): void
+    {
+        Cache::disable();
+
+        $this->assertFalse(
+            Cache::isEnabled()
+        );
+
+        $this->assertInstanceOf(
+            NullCacher::class,
+            Cache::use()
+        );
+    }
+
+    public function testEnable(): void
+    {
+        Cache::disable();
+        Cache::enable();
+
+        $this->assertTrue(
+            Cache::isEnabled()
+        );
+
+        $this->assertInstanceOf(
+            FileCacher::class,
+            Cache::use()
+        );
+    }
 
     public function testGetConfig(): void
     {
@@ -198,6 +228,11 @@ final class CacheTest extends TestCase
                 'prefix' => 'data.'
             ]
         ]);
+    }
+
+    protected function tearDown(): void
+    {
+        Cache::enable();
     }
 
 }

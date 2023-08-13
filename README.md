@@ -38,6 +38,23 @@ Clear all instances and configs.
 Cache::clear();
 ```
 
+**Disable**
+
+Disable the cache.
+
+```php
+Cache::disable();
+```
+If the cache is disabled, the `use` method will always return a *NullCacher*.
+
+**Enable**
+
+Enable the cache.
+
+```php
+Cache::enable();
+```
+
 **Get Config**
 
 Get a [*Cacher*](#cachers) config.
@@ -72,6 +89,14 @@ Check if a [*Cacher*](#cachers) config exists.
 
 ```php
 $hasConfig = Cache::hasConfig($key);
+```
+
+**Is Enabled**
+
+Check if the cache is enabled.
+
+```php
+Cache::isEnabled();
 ```
 
 **Is Loaded**
