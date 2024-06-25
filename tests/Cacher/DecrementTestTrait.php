@@ -7,7 +7,6 @@ use Fyre\Cache\Exceptions\CacheException;
 
 trait DecrementTestTrait
 {
-
     public function testDecrement(): void
     {
         $this->cache->save('test', 5);
@@ -28,6 +27,13 @@ trait DecrementTestTrait
         );
     }
 
+    public function testDecrementInvalidKey(): void
+    {
+        $this->expectException(CacheException::class);
+
+        $this->cache->decrement('test/');
+    }
+
     public function testDecrementPersists(): void
     {
         $this->cache->save('test', 5);
@@ -38,12 +44,4 @@ trait DecrementTestTrait
             $this->cache->get('test')
         );
     }
-
-    public function testDecrementInvalidKey(): void
-    {
-        $this->expectException(CacheException::class);
-
-        $this->cache->decrement('test/');
-    }
-
 }

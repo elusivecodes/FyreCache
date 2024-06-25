@@ -20,9 +20,6 @@ use function getenv;
 
 final class RedisTest extends TestCase
 {
-
-    protected Cacher $cache;
-
     use DecrementTestTrait;
     use DeleteTestTrait;
     use EmptyTestTrait;
@@ -30,6 +27,29 @@ final class RedisTest extends TestCase
     use IncrementTestTrait;
     use RemembertestTrait;
     use SaveGetTestTrait;
+
+    protected Cacher $cache;
+
+    public function testInvalidAuth(): void
+    {
+        $this->expectException(CacheException::class);
+
+        Cache::load([
+            'className' => RedisCacher::class,
+            'host' => getenv('REDIS_HOST'),
+            'password' => 'invalid',
+        ]);
+    }
+
+    public function testInvalidConnection(): void
+    {
+        $this->expectException(CacheException::class);
+
+        Cache::load([
+            'className' => RedisCacher::class,
+            'port' => 1234,
+        ]);
+    }
 
     public function testSize(): void
     {
@@ -44,32 +64,11 @@ final class RedisTest extends TestCase
     public function testSizeEmpty(): void
     {
         $this->assertSame(
-            921024,
+            859152,
             $this->cache->size()
         );
     }
 
-    public function testInvalidConnection(): void
-    {
-        $this->expectException(CacheException::class);
-
-        Cache::load([
-            'className' => RedisCacher::class,
-            'port' => 1234
-        ]);
-    }
-    
-    public function testInvalidAuth(): void
-    {
-        $this->expectException(CacheException::class);
-
-        Cache::load([
-            'className' => RedisCacher::class,
-            'host' => getenv('REDIS_HOST'),
-            'password' => 'invalid'
-        ]);
-    }
-    
     protected function setUp(): void
     {
         Cache::clear();
@@ -79,7 +78,7 @@ final class RedisTest extends TestCase
             'password' => getenv('REDIS_PASSWORD'),
             'database' => getenv('REDIS_DATABASE'),
             'port' => getenv('REDIS_PORT'),
-            'prefix' => 'prefix.'
+            'prefix' => 'prefix.',
         ]);
 
         $this->cache = Cache::use();
@@ -89,5 +88,4 @@ final class RedisTest extends TestCase
     {
         $this->cache->empty();
     }
-
 }

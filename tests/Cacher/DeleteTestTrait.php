@@ -7,7 +7,6 @@ use Fyre\Cache\Exceptions\CacheException;
 
 trait DeleteTestTrait
 {
-
     public function testDelete(): void
     {
         $this->cache->save('test', 'value');
@@ -21,13 +20,6 @@ trait DeleteTestTrait
         );
     }
 
-    public function testDeleteMissing(): void
-    {
-        $this->assertFalse(
-            $this->cache->delete('missing')
-        );
-    }
-
     public function testDeleteInvalidKey(): void
     {
         $this->expectException(CacheException::class);
@@ -35,4 +27,10 @@ trait DeleteTestTrait
         $this->cache->delete('test/');
     }
 
+    public function testDeleteMissing(): void
+    {
+        $this->assertFalse(
+            $this->cache->delete('missing')
+        );
+    }
 }

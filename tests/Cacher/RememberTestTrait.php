@@ -7,7 +7,6 @@ use Fyre\Cache\Exceptions\CacheException;
 
 trait RememberTestTrait
 {
-
     public function testRemember(): void
     {
         $this->cache->save('test', 1);
@@ -15,24 +14,6 @@ trait RememberTestTrait
         $this->assertSame(
             1,
             $this->cache->remember('test', fn() => 2)
-        );
-    }
-
-    public function testRememberMissing(): void
-    {
-        $this->assertSame(
-            2,
-            $this->cache->remember('test', fn() => 2)
-        );
-    }
-
-    public function testRememberPersists(): void
-    {
-        $this->cache->remember('test', fn() => 2);
-
-        $this->assertSame(
-            2,
-            $this->cache->get('test')
         );
     }
 
@@ -54,4 +35,21 @@ trait RememberTestTrait
         $this->cache->remember('test/', fn() => 2);
     }
 
+    public function testRememberMissing(): void
+    {
+        $this->assertSame(
+            2,
+            $this->cache->remember('test', fn() => 2)
+        );
+    }
+
+    public function testRememberPersists(): void
+    {
+        $this->cache->remember('test', fn() => 2);
+
+        $this->assertSame(
+            2,
+            $this->cache->get('test')
+        );
+    }
 }

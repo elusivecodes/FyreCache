@@ -7,7 +7,6 @@ use Fyre\Cache\Exceptions\CacheException;
 
 trait IncrementTestTrait
 {
-
     public function testIncrement(): void
     {
         $this->assertSame(
@@ -21,16 +20,6 @@ trait IncrementTestTrait
         $this->assertSame(
             5,
             $this->cache->increment('test', 5)
-        );
-    }
-
-    public function testIncrementPersists(): void
-    {
-        $this->cache->increment('test');
-
-        $this->assertEquals(
-            1,
-            $this->cache->get('test')
         );
     }
 
@@ -52,4 +41,13 @@ trait IncrementTestTrait
         $this->cache->increment('test/');
     }
 
+    public function testIncrementPersists(): void
+    {
+        $this->cache->increment('test');
+
+        $this->assertEquals(
+            1,
+            $this->cache->get('test')
+        );
+    }
 }

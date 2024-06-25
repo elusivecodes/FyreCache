@@ -7,19 +7,11 @@ use Fyre\Cache\Exceptions\CacheException;
 
 trait HasTestTrait
 {
-
     public function testHas(): void
     {
         $this->cache->save('test', 1);
 
         $this->assertTrue(
-            $this->cache->has('test')
-        );
-    }
-
-    public function testHasMissing(): void
-    {
-        $this->assertFalse(
             $this->cache->has('test')
         );
     }
@@ -31,4 +23,10 @@ trait HasTestTrait
         $this->cache->has('test/');
     }
 
+    public function testHasMissing(): void
+    {
+        $this->assertFalse(
+            $this->cache->has('test')
+        );
+    }
 }

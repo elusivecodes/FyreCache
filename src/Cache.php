@@ -16,16 +16,15 @@ use function is_array;
  */
 abstract class Cache
 {
-
     public const DEFAULT = 'default';
 
     protected static array $config = [];
 
+    protected static bool $enabled = true;
+
     protected static array $instances = [];
 
     protected static NullCacher $nullCacher;
-
-    protected static bool $enabled = true;
 
     /**
      * Clear all instances and configs.
@@ -54,8 +53,8 @@ abstract class Cache
 
     /**
      * Get the handler config.
+     *
      * @param string|null $key The config key.
-     * @return array|null
      */
     public static function getConfig(string|null $key = null): array|null
     {
@@ -68,6 +67,7 @@ abstract class Cache
 
     /**
      * Get the key for a cacher instance.
+     *
      * @param Cacher $cacher The Cacher.
      * @return string|null The cacher key.
      */
@@ -78,6 +78,7 @@ abstract class Cache
 
     /**
      * Determine if a config exists.
+     *
      * @param string $key The config key.
      * @return bool TRUE if the config exists, otherwise FALSE.
      */
@@ -88,6 +89,7 @@ abstract class Cache
 
     /**
      * Determine if the cache is enabled.
+     *
      * @return bool TRUE if the cache is enabled, otherwise FALSE.
      */
     public static function isEnabled(): bool
@@ -97,6 +99,7 @@ abstract class Cache
 
     /**
      * Determine if a handler is loaded.
+     *
      * @param string $key The config key.
      * @return bool TRUE if the handler is loaded, otherwise FALSE.
      */
@@ -107,8 +110,10 @@ abstract class Cache
 
     /**
      * Load a handler.
+     *
      * @param array $options Options for the handler.
      * @return Cacher The handler.
+     *
      * @throws CacheException if the handler is not valid.
      */
     public static function load(array $options = []): Cacher
@@ -126,14 +131,16 @@ abstract class Cache
 
     /**
      * Set handler config.
+     *
      * @param string|array $key The config key.
      * @param array|null $options The config options.
+     *
      * @throws CacheException if the config is not valid.
      */
-    public static function setConfig(string|array $key, array|null $options = null): void
+    public static function setConfig(array|string $key, array|null $options = null): void
     {
         if (is_array($key)) {
-            foreach ($key AS $k => $v) {
+            foreach ($key as $k => $v) {
                 static::setConfig($k, $v);
             }
 
@@ -153,6 +160,7 @@ abstract class Cache
 
     /**
      * Unload a handler.
+     *
      * @param string $key The config key.
      * @return bool TRUE if the handler was removed, otherwise FALSE.
      */
@@ -170,6 +178,7 @@ abstract class Cache
 
     /**
      * Load a shared handler instance.
+     *
      * @param string $key The config key.
      * @return Cacher The handler.
      */
@@ -181,5 +190,4 @@ abstract class Cache
 
         return static::$instances[$key] ??= static::load(static::$config[$key] ?? []);
     }
-
 }

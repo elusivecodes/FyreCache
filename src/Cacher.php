@@ -15,16 +15,16 @@ use function strpbrk;
  */
 abstract class Cacher
 {
-
     protected static array $defaults = [
         'expire' => null,
-        'prefix' => ''
+        'prefix' => '',
     ];
 
     protected array $config;
 
     /**
      * New Cacher constructor.
+     *
      * @param array $options Options for the handler.
      */
     public function __construct(array $options = [])
@@ -34,6 +34,7 @@ abstract class Cacher
 
     /**
      * Decrement a cache value.
+     *
      * @param string $key The cache key.
      * @param int $amount The amount to decrement.
      * @return int The new value.
@@ -45,6 +46,7 @@ abstract class Cacher
 
     /**
      * Delete an item from the cache.
+     *
      * @param string $key The cache key.
      * @return bool TRUE if the item was deleted, otherwise FALSE.
      */
@@ -52,12 +54,14 @@ abstract class Cacher
 
     /**
      * Empty the cache.
+     *
      * @return bool TRUE if the cache was cleared, otherwise FALSE.
      */
     abstract public function empty(): bool;
 
     /**
      * Retrieve a value from the cache.
+     *
      * @param string $key The cache key.
      * @return mixed The cache value.
      */
@@ -65,6 +69,7 @@ abstract class Cacher
 
     /**
      * Get the config.
+     *
      * @return array The config.
      */
     public function getConfig(): array
@@ -74,6 +79,7 @@ abstract class Cacher
 
     /**
      * Determine if an item exists in the cache.
+     *
      * @param string $key The cache key.
      * @return bool TRUE if the item exists, otherwise FALSE.
      */
@@ -84,6 +90,7 @@ abstract class Cacher
 
     /**
      * Increment a cache value.
+     *
      * @param string $key The cache key.
      * @param int $amount The amount to increment.
      * @return int The new value.
@@ -92,6 +99,7 @@ abstract class Cacher
 
     /**
      * Retrieve an item from the cache, or save a new value if it doesn't exist.
+     *
      * @param string $key The cache key.
      * @param Closure $callback The callback method to generate the value.
      * @param int|null $expire The number of seconds the value will be valid.
@@ -114,6 +122,7 @@ abstract class Cacher
 
     /**
      * Save an item in the cache.
+     *
      * @param string $key The cache key.
      * @param mixed $data The data to cache.
      * @param int|null $expire The number of seconds the value will be valid.
@@ -123,14 +132,17 @@ abstract class Cacher
 
     /**
      * Get the size of the cache.
+     *
      * @return int The size of the cache (in bytes).
      */
     abstract public function size(): int;
 
     /**
      * Get the real cache key.
+     *
      * @param string $key The cache key.
      * @return string The real cache key.
+     *
      * @throws CacheException if the handler is not valid.
      */
     protected function prepareKey(string $key): string
@@ -141,5 +153,4 @@ abstract class Cacher
 
         return $this->config['prefix'].$key;
     }
-
 }

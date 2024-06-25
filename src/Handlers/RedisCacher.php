@@ -18,20 +18,21 @@ use function unserialize;
  */
 class RedisCacher extends Cacher
 {
-
-    protected static array $defaults =[ 
+    protected static array $defaults = [
         'host' => '127.0.0.1',
         'password' => null,
         'port' => 6379,
         'database' => null,
-        'timeout' => 0
+        'timeout' => 0,
     ];
 
     protected Redis $connection;
 
     /**
      * New Cacher constructor.
+     *
      * @param array $options Options for the handler.
+     *
      * @throws CacheException if the connection is not valid.
      */
     public function __construct(array $options)
@@ -40,7 +41,7 @@ class RedisCacher extends Cacher
 
         try {
             $this->connection = new Redis();
-    
+
             if (!$this->connection->connect($this->config['host'], (int) $this->config['port'], $this->config['timeout'])) {
                 throw CacheException::forConnectionFailed();
             }
@@ -68,6 +69,7 @@ class RedisCacher extends Cacher
 
     /**
      * Delete an item from the cache.
+     *
      * @param string $key The cache key.
      * @return bool TRUE if the item was deleted, otherwise FALSE.
      */
@@ -80,6 +82,7 @@ class RedisCacher extends Cacher
 
     /**
      * Empty the cache.
+     *
      * @return bool TRUE if the cache was cleared, otherwise FALSE.
      */
     public function empty(): bool
@@ -89,6 +92,7 @@ class RedisCacher extends Cacher
 
     /**
      * Retrieve a value from the cache.
+     *
      * @param string $key The cache key.
      * @return mixed The cache value.
      */
@@ -117,6 +121,7 @@ class RedisCacher extends Cacher
 
     /**
      * Determine if an item exists in the cache.
+     *
      * @param string $key The cache key.
      * @return bool TRUE if the item exists, otherwise FALSE.
      */
@@ -129,6 +134,7 @@ class RedisCacher extends Cacher
 
     /**
      * Increment a cache value.
+     *
      * @param string $key The cache key.
      * @param int $amount The amount to increment.
      * @return int The new value.
@@ -145,9 +151,10 @@ class RedisCacher extends Cacher
 
     /**
      * Save an item in the cache.
+     *
      * @param string $key The cache key.
-     * @param mixed $data The data to cache.
      * @param int|null $expire The number of seconds the value will be valid.
+     * @param mixed $data The data to cache.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
     public function save(string $key, mixed $value, int|null $expire = null): bool
@@ -182,6 +189,7 @@ class RedisCacher extends Cacher
 
     /**
      * Get the size of the cache.
+     *
      * @return int The size of the cache (in bytes).
      */
     public function size(): int
@@ -190,5 +198,4 @@ class RedisCacher extends Cacher
 
         return $info['used_memory'];
     }
-
 }

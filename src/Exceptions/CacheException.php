@@ -10,7 +10,6 @@ use RuntimeException;
  */
 class CacheException extends RuntimeException
 {
-
     public static function forAuthFailed(): static
     {
         return new static('Cache handler authentication failed');
@@ -50,5 +49,4 @@ class CacheException extends RuntimeException
     {
         return new static('Cache handler invalid key: '.$key);
     }
-
 }

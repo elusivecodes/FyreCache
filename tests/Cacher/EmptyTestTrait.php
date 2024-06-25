@@ -5,7 +5,6 @@ namespace Tests\Cacher;
 
 trait EmptyTestTrait
 {
-
     public function testEmpty(): void
     {
         $this->cache->save('test1', 'value');
@@ -23,5 +22,4 @@ trait EmptyTestTrait
             $this->cache->has('test2')
         );
     }
-
 }

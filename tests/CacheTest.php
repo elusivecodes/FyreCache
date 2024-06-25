@@ -11,7 +11,6 @@ use PHPUnit\Framework\TestCase;
 
 final class CacheTest extends TestCase
 {
-
     public function testDisable(): void
     {
         Cache::disable();
@@ -48,13 +47,13 @@ final class CacheTest extends TestCase
                 'default' => [
                     'className' => FileCacher::class,
                     'path' => 'cache',
-                    'prefix' => 'prefix.'
+                    'prefix' => 'prefix.',
                 ],
                 'data' => [
                     'className' => FileCacher::class,
                     'path' => 'data',
-                    'prefix' => 'data.'
-                ]
+                    'prefix' => 'data.',
+                ],
             ],
             Cache::getConfig()
         );
@@ -66,7 +65,7 @@ final class CacheTest extends TestCase
             [
                 'className' => FileCacher::class,
                 'path' => 'data',
-                'prefix' => 'data.'
+                'prefix' => 'data.',
             ],
             Cache::getConfig('data')
         );
@@ -85,7 +84,7 @@ final class CacheTest extends TestCase
     public function testGetKeyInvalid(): void
     {
         $handler = Cache::load([
-            'className' => FileCacher::class
+            'className' => FileCacher::class,
         ]);
 
         $this->assertNull(
@@ -96,18 +95,9 @@ final class CacheTest extends TestCase
     public function testIsLoaded(): void
     {
         Cache::use();
-        
+
         $this->assertTrue(
             Cache::isLoaded()
-        );
-    }
-
-    public function testIsLoadedKey(): void
-    {
-        Cache::use('data');
-        
-        $this->assertTrue(
-            Cache::isLoaded('data')
         );
     }
 
@@ -118,12 +108,21 @@ final class CacheTest extends TestCase
         );
     }
 
+    public function testIsLoadedKey(): void
+    {
+        Cache::use('data');
+
+        $this->assertTrue(
+            Cache::isLoaded('data')
+        );
+    }
+
     public function testLoad(): void
     {
         $this->assertInstanceOf(
             FileCacher::class,
             Cache::load([
-                'className' => FileCacher::class
+                'className' => FileCacher::class,
             ])
         );
     }
@@ -133,19 +132,19 @@ final class CacheTest extends TestCase
         $this->expectException(CacheException::class);
 
         Cache::load([
-            'className' => 'Invalid'
+            'className' => 'Invalid',
         ]);
     }
 
     public function testSetConfig(): void
     {
         Cache::setConfig('test', [
-            'className' => FileCacher::class
+            'className' => FileCacher::class,
         ]);
 
         $this->assertSame(
             [
-                'className' => FileCacher::class
+                'className' => FileCacher::class,
             ],
             Cache::getConfig('test')
         );
@@ -156,7 +155,7 @@ final class CacheTest extends TestCase
         $this->expectException(CacheException::class);
 
         Cache::setConfig('default', [
-            'className' => FileCacher::class
+            'className' => FileCacher::class,
         ]);
     }
 
@@ -176,6 +175,13 @@ final class CacheTest extends TestCase
         );
     }
 
+    public function testUnloadInvalid(): void
+    {
+        $this->assertFalse(
+            Cache::unload('test')
+        );
+    }
+
     public function testUnloadKey(): void
     {
         Cache::use('data');
@@ -189,13 +195,6 @@ final class CacheTest extends TestCase
         );
         $this->assertFalse(
             Cache::hasConfig('data')
-        );
-    }
-
-    public function testUnloadInvalid(): void
-    {
-        $this->assertFalse(
-            Cache::unload('test')
         );
     }
 
@@ -220,13 +219,13 @@ final class CacheTest extends TestCase
             'default' => [
                 'className' => FileCacher::class,
                 'path' => 'cache',
-                'prefix' => 'prefix.'
+                'prefix' => 'prefix.',
             ],
             'data' => [
                 'className' => FileCacher::class,
                 'path' => 'data',
-                'prefix' => 'data.'
-            ]
+                'prefix' => 'data.',
+            ],
         ]);
     }
 
@@ -234,5 +233,4 @@ final class CacheTest extends TestCase
     {
         Cache::enable();
     }
-
 }

@@ -19,16 +19,16 @@ use function unserialize;
  */
 class FileCacher extends Cacher
 {
-
     protected static array $defaults = [
         'path' => '/tmp/cache',
-        'mode' => 0640
+        'mode' => 0640,
     ];
 
     protected Folder $folder;
 
     /**
      * New Cacher constructor.
+     *
      * @param array $options Options for the handler.
      */
     public function __construct(array $options = [])
@@ -40,6 +40,7 @@ class FileCacher extends Cacher
 
     /**
      * Delete an item from the cache.
+     *
      * @param string $key The cache key.
      * @return bool TRUE if the item was deleted, otherwise FALSE.
      */
@@ -61,6 +62,7 @@ class FileCacher extends Cacher
 
     /**
      * Empty the cache.
+     *
      * @return bool TRUE if the cache was cleared, otherwise FALSE.
      */
     public function empty(): bool
@@ -68,10 +70,11 @@ class FileCacher extends Cacher
         $this->folder->empty();
 
         return true;
-	}
+    }
 
     /**
      * Retrieve a value from the cache.
+     *
      * @param string $key The cache key.
      * @return mixed The cache value.
      */
@@ -90,10 +93,11 @@ class FileCacher extends Cacher
         }
 
         return $value;
-	}
+    }
 
     /**
      * Increment a cache value.
+     *
      * @param string $key The cache key.
      * @param int $amount The amount to increment.
      * @return int The new value.
@@ -125,6 +129,7 @@ class FileCacher extends Cacher
 
     /**
      * Save an item in the cache.
+     *
      * @param string $key The cache key.
      * @param mixed $data The data to cache.
      * @param int|null $expire The number of seconds the value will be valid.
@@ -146,6 +151,7 @@ class FileCacher extends Cacher
 
     /**
      * Get the size of the cache.
+     *
      * @return int The size of the cache (in bytes).
      */
     public function size(): int
@@ -155,6 +161,7 @@ class FileCacher extends Cacher
 
     /**
      * Open a cache file (or create it if it doesn't exist).
+     *
      * @param string $key The cache key.
      * @return File The File.
      */
@@ -172,6 +179,7 @@ class FileCacher extends Cacher
 
     /**
      * Read data from a File.
+     *
      * @param File $file The File.
      * @return mixed The file data.
      */
@@ -198,6 +206,7 @@ class FileCacher extends Cacher
 
     /**
      * Write data to a file pointer.
+     *
      * @param File $file The File.
      * @param mixed $data The data to cache.
      * @param int|null $expire The number of seconds the value will be valid.
@@ -212,10 +221,9 @@ class FileCacher extends Cacher
 
         $data = serialize([
             'data' => $data,
-            'expire' => $expire
+            'expire' => $expire,
         ]);
 
         $file->write($data);
     }
-
 }

@@ -20,9 +20,6 @@ use function getenv;
 
 final class MemcachedTest extends TestCase
 {
-
-    protected Cacher $cache;
-
     use DecrementTestTrait;
     use DeleteTestTrait;
     use EmptyTestTrait;
@@ -30,6 +27,18 @@ final class MemcachedTest extends TestCase
     use IncrementTestTrait;
     use RemembertestTrait;
     use SaveGetTestTrait;
+
+    protected Cacher $cache;
+
+    public function testInvalidConnection(): void
+    {
+        $this->expectException(CacheException::class);
+
+        Cache::load([
+            'className' => MemcachedCacher::class,
+            'port' => 1234,
+        ]);
+    }
 
     public function testSize(): void
     {
@@ -49,16 +58,6 @@ final class MemcachedTest extends TestCase
         );
     }
 
-    public function testInvalidConnection(): void
-    {
-        $this->expectException(CacheException::class);
-
-        Cache::load([
-            'className' => MemcachedCacher::class,
-            'port' => 1234
-        ]);
-    }
-    
     protected function setUp(): void
     {
         Cache::clear();
@@ -66,7 +65,7 @@ final class MemcachedTest extends TestCase
             'className' => MemcachedCacher::class,
             'host' => getenv('MEMCACHED_HOST'),
             'port' => getenv('MEMCACHED_PORT'),
-            'prefix' => 'prefix.'
+            'prefix' => 'prefix.',
         ]);
 
         $this->cache = Cache::use();
@@ -76,5 +75,4 @@ final class MemcachedTest extends TestCase
     {
         $this->cache->empty();
     }
-
 }

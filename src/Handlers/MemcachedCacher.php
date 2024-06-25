@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Fyre\Cache\Handlers;
 
+use Exception;
 use Fyre\Cache\Cacher;
 use Fyre\Cache\Exceptions\CacheException;
-use Exception;
 use Memcached;
 
 /**
@@ -13,18 +13,19 @@ use Memcached;
  */
 class MemcachedCacher extends Cacher
 {
-
-    protected static array $defaults =[ 
+    protected static array $defaults = [
         'host' => '127.0.0.1',
         'port' => 11211,
-        'weight' => 1
+        'weight' => 1,
     ];
 
     protected Memcached $connection;
 
     /**
      * New Cacher constructor.
+     *
      * @param array $options Options for the handler.
+     *
      * @throws CacheException if the connection is not valid.
      */
     public function __construct(array $options)
@@ -33,7 +34,7 @@ class MemcachedCacher extends Cacher
 
         try {
             $this->connection = new Memcached();
-    
+
             $this->connection->setOption(Memcached::OPT_BINARY_PROTOCOL, true);
 
             $this->connection->addServer(
@@ -62,6 +63,7 @@ class MemcachedCacher extends Cacher
 
     /**
      * Decrement a cache value.
+     *
      * @param string $key The cache key.
      * @param int $amount The amount to decrement.
      * @return int The new value.
@@ -75,6 +77,7 @@ class MemcachedCacher extends Cacher
 
     /**
      * Delete an item from the cache.
+     *
      * @param string $key The cache key.
      * @return bool TRUE if the item was deleted, otherwise FALSE.
      */
@@ -87,6 +90,7 @@ class MemcachedCacher extends Cacher
 
     /**
      * Empty the cache.
+     *
      * @return bool TRUE if the cache was cleared, otherwise FALSE.
      */
     public function empty(): bool
@@ -96,6 +100,7 @@ class MemcachedCacher extends Cacher
 
     /**
      * Retrieve a value from the cache.
+     *
      * @param string $key The cache key.
      * @return mixed The cache value.
      */
@@ -114,6 +119,7 @@ class MemcachedCacher extends Cacher
 
     /**
      * Increment a cache value.
+     *
      * @param string $key The cache key.
      * @param int $amount The amount to increment.
      * @return int The new value.
@@ -127,9 +133,10 @@ class MemcachedCacher extends Cacher
 
     /**
      * Save an item in the cache.
+     *
      * @param string $key The cache key.
-     * @param mixed $data The data to cache.
      * @param int|null $expire The number of seconds the value will be valid.
+     * @param mixed $data The data to cache.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
     public function save(string $key, mixed $value, int|null $expire = null): bool
@@ -141,6 +148,7 @@ class MemcachedCacher extends Cacher
 
     /**
      * Get the size of the cache.
+     *
      * @return int The size of the cache (in bytes).
      */
     public function size(): int
@@ -152,6 +160,7 @@ class MemcachedCacher extends Cacher
 
     /**
      * Get memcached stats.
+     *
      * @return array|null The memcached stats.
      */
     protected function getStats(): array|null
@@ -159,7 +168,7 @@ class MemcachedCacher extends Cacher
         $stats = $this->connection->getStats();
 
         $server = $this->config['host'].':'.$this->config['port'];
+
         return $stats[$server] ?? null;
     }
-
 }

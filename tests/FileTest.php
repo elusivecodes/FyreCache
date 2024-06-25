@@ -19,9 +19,6 @@ use function rmdir;
 
 final class FileTest extends TestCase
 {
-
-    protected Cacher $cache;
-
     use DecrementTestTrait;
     use DeleteTestTrait;
     use EmptyTestTrait;
@@ -29,6 +26,8 @@ final class FileTest extends TestCase
     use IncrementTestTrait;
     use RemembertestTrait;
     use SaveGetTestTrait;
+
+    protected Cacher $cache;
 
     public function testSize(): void
     {
@@ -47,14 +46,14 @@ final class FileTest extends TestCase
             $this->cache->size()
         );
     }
-    
+
     protected function setUp(): void
     {
         Cache::clear();
         Cache::setConfig('default', [
             'className' => FileCacher::class,
             'path' => 'cache',
-            'prefix' => 'prefix.'
+            'prefix' => 'prefix.',
         ]);
 
         $this->cache = Cache::use();
@@ -65,5 +64,4 @@ final class FileTest extends TestCase
         $this->cache->delete('test');
         rmdir('cache');
     }
-
 }
