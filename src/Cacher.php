@@ -7,7 +7,6 @@ use Closure;
 use Fyre\Cache\Exceptions\CacheException;
 
 use function array_replace;
-use function call_user_func;
 use function strpbrk;
 
 /**
@@ -113,7 +112,7 @@ abstract class Cacher
             return $value;
         }
 
-        $value = call_user_func($callback);
+        $value = $callback();
 
         $this->save($key, $value, $expire);
 
