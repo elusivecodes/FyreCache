@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Fyre\Cache\Cache;
+use Fyre\Cache\CacheManager;
 use Fyre\Cache\Cacher;
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\RedisCacher;
@@ -34,7 +34,7 @@ final class RedisTest extends TestCase
     {
         $this->expectException(CacheException::class);
 
-        Cache::load([
+        (new CacheManager())->build([
             'className' => RedisCacher::class,
             'host' => getenv('REDIS_HOST'),
             'password' => 'invalid',
@@ -45,7 +45,7 @@ final class RedisTest extends TestCase
     {
         $this->expectException(CacheException::class);
 
-        Cache::load([
+        (new CacheManager())->build([
             'className' => RedisCacher::class,
             'port' => 1234,
         ]);
@@ -71,8 +71,7 @@ final class RedisTest extends TestCase
 
     protected function setUp(): void
     {
-        Cache::clear();
-        Cache::setConfig('default', [
+        $this->cache = (new CacheManager())->build([
             'className' => RedisCacher::class,
             'host' => getenv('REDIS_HOST'),
             'password' => getenv('REDIS_PASSWORD'),
@@ -80,8 +79,6 @@ final class RedisTest extends TestCase
             'port' => getenv('REDIS_PORT'),
             'prefix' => 'prefix.',
         ]);
-
-        $this->cache = Cache::use();
     }
 
     protected function tearDown(): void

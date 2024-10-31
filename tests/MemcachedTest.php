@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Fyre\Cache\Cache;
+use Fyre\Cache\CacheManager;
 use Fyre\Cache\Cacher;
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\MemcachedCacher;
@@ -34,7 +34,7 @@ final class MemcachedTest extends TestCase
     {
         $this->expectException(CacheException::class);
 
-        Cache::load([
+        (new CacheManager())->build([
             'className' => MemcachedCacher::class,
             'port' => 1234,
         ]);
@@ -60,15 +60,12 @@ final class MemcachedTest extends TestCase
 
     protected function setUp(): void
     {
-        Cache::clear();
-        Cache::setConfig('default', [
+        $this->cache = (new CacheManager())->build([
             'className' => MemcachedCacher::class,
             'host' => getenv('MEMCACHED_HOST'),
             'port' => getenv('MEMCACHED_PORT'),
             'prefix' => 'prefix.',
         ]);
-
-        $this->cache = Cache::use();
     }
 
     protected function tearDown(): void

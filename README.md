@@ -5,6 +5,7 @@
 
 ## Table Of Contents
 - [Installation](#installation)
+- [Basic Usage](#basic-usage)
 - [Methods](#methods)
 - [Cachers](#cachers)
     - [File](#file)
@@ -24,18 +25,37 @@ composer require fyre/cache
 In PHP:
 
 ```php
-use Fyre\Cache\Cache;
+use Fyre\Cache\CacheManager;
+```
+
+
+## Basic Usage
+
+- `$config` is an array containing key/value of configuration options.
+
+```php
+$cacheManager = new CacheManager($config);
 ```
 
 
 ## Methods
+
+**Build**
+
+Build a [*Cacher*](#cachers).
+
+- `$options` is an array containing configuration options.
+
+```php
+$cacher = $cacheManager->build($options);
+```
 
 **Clear**
 
 Clear all instances and configs.
 
 ```php
-Cache::clear();
+$cacheManager->clear();
 ```
 
 **Disable**
@@ -43,7 +63,7 @@ Cache::clear();
 Disable the cache.
 
 ```php
-Cache::disable();
+$cacheManager->disable();
 ```
 If the cache is disabled, the `use` method will always return a *NullCacher*.
 
@@ -52,7 +72,7 @@ If the cache is disabled, the `use` method will always return a *NullCacher*.
 Enable the cache.
 
 ```php
-Cache::enable();
+$cacheManager->enable();
 ```
 
 **Get Config**
@@ -62,33 +82,23 @@ Get a [*Cacher*](#cachers) config.
 - `$key` is a string representing the [*Cacher*](#cachers) key.
 
 ```php
-$config = Cache::getConfig($key);
+$config = $cacheManager->getConfig($key);
 ```
 
 Alternatively, if the `$key` argument is omitted an array containing all configurations will be returned.
 
 ```php
-$config = Cache::getConfig();
-```
-
-**Get Key**
-
-Get the key for a [*Cacher*](#cachers) instance.
-
-- `$cacher` is a [*Cacher*](#cachers).
-
-```php
-$key = Cache::getKey($cacher);
+$config = $cacheManager->getConfig();
 ```
 
 **Has Config**
 
 Check if a [*Cacher*](#cachers) config exists.
 
-- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `Cache::DEFAULT`.
+- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `CacheManager::DEFAULT`.
 
 ```php
-$hasConfig = Cache::hasConfig($key);
+$hasConfig = $cacheManager->hasConfig($key);
 ```
 
 **Is Enabled**
@@ -96,27 +106,17 @@ $hasConfig = Cache::hasConfig($key);
 Check if the cache is enabled.
 
 ```php
-Cache::isEnabled();
+$cacheManager->isEnabled();
 ```
 
 **Is Loaded**
 
 Check if a [*Cacher*](#cachers) instance is loaded.
 
-- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `Cache::DEFAULT`.
+- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `CacheManager::DEFAULT`.
 
 ```php
-$isLoaded = Cache::isLoaded($key);
-```
-
-**Load**
-
-Load a [*Cacher*](#cachers).
-
-- `$options` is an array containing configuration options.
-
-```php
-$cacher = Cache::load($options);
+$isLoaded = $cacheManager->isLoaded($key);
 ```
 
 **Set Config**
@@ -127,33 +127,27 @@ Set the [*Cacher*](#cachers) config.
 - `$options` is an array containing configuration options.
 
 ```php
-Cache::setConfig($key, $options);
-```
-
-Alternatively, a single array can be provided containing key/value of configuration options.
-
-```php
-Cache::setConfig($config);
+$cacheManager->setConfig($key, $options);
 ```
 
 **Unload**
 
 Unload a [*Cacher*](#cachers).
 
-- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `Cache::DEFAULT`.
+- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `CacheManager::DEFAULT`.
 
 ```php
-$unloaded = Cache::unload($key);
+$cacheManager->unload($key);
 ```
 
 **Use**
 
 Load a shared [*Cacher*](#cachers) instance.
 
-- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `Cache::DEFAULT`.
+- `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `CacheManager::DEFAULT`.
 
 ```php
-$cacher = Cache::use($key);
+$cacher = $cacheManager->use($key);
 ```
 
 
@@ -260,7 +254,6 @@ $size = $cacher->size();
 
 The File cacher can be loaded using custom configuration.
 
-- `$key` is a string representing the cacher key.
 - `$options` is an array containing configuration options.
     - `className` must be set to `\Fyre\Cache\Handlers\FileCacher`.
     - `expire` is a number indicating the default cache timeout.
@@ -269,9 +262,7 @@ The File cacher can be loaded using custom configuration.
     - `mode` is a number indicating the cache file permissions, and will default to *0640*.
 
 ```php
-Cache::setConfig($key, $options);
-
-$cacher = Cache::use($key);
+$cacher = $cacheManager->build($options);
 ```
 
 
@@ -279,7 +270,6 @@ $cacher = Cache::use($key);
 
 The Memcached cacher can be loaded using custom configuration.
 
-- `$key` is a string representing the cacher key.
 - `$options` is an array containing configuration options.
     - `className` must be set to `\Fyre\Cache\Handlers\MemcachedCacher`.
     - `expire` is a number indicating the default cache timeout.
@@ -289,9 +279,7 @@ The Memcached cacher can be loaded using custom configuration.
     - `weight` is a number indicating the server weight, and will default to *1*.
 
 ```php
-Cache::setConfig($key, $options);
-
-$cacher = Cache::use($key);
+$cacher = $cacheManager->build($options);
 ```
 
 
@@ -299,7 +287,6 @@ $cacher = Cache::use($key);
 
 The Redis cacher can be loaded using custom configuration.
 
-- `$key` is a string representing the cacher key.
 - `$options` is an array containing configuration options.
     - `className` must be set to `\Fyre\Cache\Handlers\RedisCacher`.
     - `expire` is a number indicating the default cache timeout.
@@ -311,7 +298,5 @@ The Redis cacher can be loaded using custom configuration.
     - `timeout` is a number indicating the connection timeout.
 
 ```php
-Cache::setConfig($key, $options);
-
-$cacher = Cache::use($key);
+$cacher = $cacheManager->build($options);
 ```

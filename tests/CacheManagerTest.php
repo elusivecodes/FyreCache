@@ -3,40 +3,68 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Fyre\Cache\Cache;
+use Fyre\Cache\CacheManager;
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\FileCacher;
 use Fyre\Cache\Handlers\NullCacher;
 use PHPUnit\Framework\TestCase;
 
-final class CacheTest extends TestCase
+final class CacheManagerTest extends TestCase
 {
+    protected CacheManager $cache;
+
+    public function testBuild(): void
+    {
+        $this->assertInstanceOf(
+            FileCacher::class,
+            $this->cache->build([
+                'className' => FileCacher::class,
+            ])
+        );
+    }
+
+    public function testBuildInvalidHandler(): void
+    {
+        $this->expectException(CacheException::class);
+
+        $this->cache->build([
+            'className' => 'Invalid',
+        ]);
+    }
+
     public function testDisable(): void
     {
-        Cache::disable();
+        $this->assertSame(
+            $this->cache,
+            $this->cache->disable()
+        );
 
         $this->assertFalse(
-            Cache::isEnabled()
+            $this->cache->isEnabled()
         );
 
         $this->assertInstanceOf(
             NullCacher::class,
-            Cache::use()
+            $this->cache->use()
         );
     }
 
     public function testEnable(): void
     {
-        Cache::disable();
-        Cache::enable();
+        $this->cache->disable();
+
+        $this->assertSame(
+            $this->cache,
+            $this->cache->enable()
+        );
 
         $this->assertTrue(
-            Cache::isEnabled()
+            $this->cache->isEnabled()
         );
 
         $this->assertInstanceOf(
             FileCacher::class,
-            Cache::use()
+            $this->cache->use()
         );
     }
 
@@ -55,7 +83,7 @@ final class CacheTest extends TestCase
                     'prefix' => 'data.',
                 ],
             ],
-            Cache::getConfig()
+            $this->cache->getConfig()
         );
     }
 
@@ -67,86 +95,49 @@ final class CacheTest extends TestCase
                 'path' => 'data',
                 'prefix' => 'data.',
             ],
-            Cache::getConfig('data')
-        );
-    }
-
-    public function testGetKey(): void
-    {
-        $handler = Cache::use();
-
-        $this->assertSame(
-            'default',
-            Cache::getKey($handler)
-        );
-    }
-
-    public function testGetKeyInvalid(): void
-    {
-        $handler = Cache::load([
-            'className' => FileCacher::class,
-        ]);
-
-        $this->assertNull(
-            Cache::getKey($handler)
+            $this->cache->getConfig('data')
         );
     }
 
     public function testIsLoaded(): void
     {
-        Cache::use();
+        $this->cache->use();
 
         $this->assertTrue(
-            Cache::isLoaded()
+            $this->cache->isLoaded()
         );
     }
 
     public function testIsLoadedInvalid(): void
     {
         $this->assertFalse(
-            Cache::isLoaded('test')
+            $this->cache->isLoaded('test')
         );
     }
 
     public function testIsLoadedKey(): void
     {
-        Cache::use('data');
+        $this->cache->use('data');
 
         $this->assertTrue(
-            Cache::isLoaded('data')
+            $this->cache->isLoaded('data')
         );
-    }
-
-    public function testLoad(): void
-    {
-        $this->assertInstanceOf(
-            FileCacher::class,
-            Cache::load([
-                'className' => FileCacher::class,
-            ])
-        );
-    }
-
-    public function testLoadInvalidHandler(): void
-    {
-        $this->expectException(CacheException::class);
-
-        Cache::load([
-            'className' => 'Invalid',
-        ]);
     }
 
     public function testSetConfig(): void
     {
-        Cache::setConfig('test', [
-            'className' => FileCacher::class,
-        ]);
+        $this->assertSame(
+            $this->cache,
+            $this->cache->setConfig('test', [
+                'className' => FileCacher::class,
+            ])
+        );
 
         $this->assertSame(
             [
                 'className' => FileCacher::class,
             ],
-            Cache::getConfig('test')
+            $this->cache->getConfig('test')
         );
     }
 
@@ -154,54 +145,57 @@ final class CacheTest extends TestCase
     {
         $this->expectException(CacheException::class);
 
-        Cache::setConfig('default', [
+        $this->cache->setConfig('default', [
             'className' => FileCacher::class,
         ]);
     }
 
     public function testUnload(): void
     {
-        Cache::use();
+        $this->cache->use();
 
-        $this->assertTrue(
-            Cache::unload()
+        $this->assertSame(
+            $this->cache,
+            $this->cache->unload()
         );
 
         $this->assertFalse(
-            Cache::isLoaded()
+            $this->cache->isLoaded()
         );
         $this->assertFalse(
-            Cache::hasConfig()
+            $this->cache->hasConfig()
         );
     }
 
     public function testUnloadInvalid(): void
     {
-        $this->assertFalse(
-            Cache::unload('test')
+        $this->assertSame(
+            $this->cache,
+            $this->cache->unload('test')
         );
     }
 
     public function testUnloadKey(): void
     {
-        Cache::use('data');
+        $this->cache->use('data');
 
-        $this->assertTrue(
-            Cache::unload('data')
+        $this->assertSame(
+            $this->cache,
+            $this->cache->unload('data')
         );
 
         $this->assertFalse(
-            Cache::isLoaded('data')
+            $this->cache->isLoaded('data')
         );
         $this->assertFalse(
-            Cache::hasConfig('data')
+            $this->cache->hasConfig('data')
         );
     }
 
     public function testUse(): void
     {
-        $handler1 = Cache::use();
-        $handler2 = Cache::use();
+        $handler1 = $this->cache->use();
+        $handler2 = $this->cache->use();
 
         $this->assertSame($handler1, $handler2);
 
@@ -213,9 +207,7 @@ final class CacheTest extends TestCase
 
     protected function setUp(): void
     {
-        Cache::clear();
-
-        Cache::setConfig([
+        $this->cache = new CacheManager([
             'default' => [
                 'className' => FileCacher::class,
                 'path' => 'cache',
@@ -227,10 +219,5 @@ final class CacheTest extends TestCase
                 'prefix' => 'data.',
             ],
         ]);
-    }
-
-    protected function tearDown(): void
-    {
-        Cache::enable();
     }
 }

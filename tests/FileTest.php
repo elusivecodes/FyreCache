@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Fyre\Cache\Cache;
+use Fyre\Cache\CacheManager;
 use Fyre\Cache\Cacher;
 use Fyre\Cache\Handlers\FileCacher;
 use PHPUnit\Framework\TestCase;
@@ -49,14 +49,11 @@ final class FileTest extends TestCase
 
     protected function setUp(): void
     {
-        Cache::clear();
-        Cache::setConfig('default', [
+        $this->cache = (new CacheManager())->build([
             'className' => FileCacher::class,
             'path' => 'cache',
             'prefix' => 'prefix.',
         ]);
-
-        $this->cache = Cache::use();
     }
 
     protected function tearDown(): void
