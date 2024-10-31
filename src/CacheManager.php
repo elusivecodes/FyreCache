@@ -146,7 +146,7 @@ class CacheManager
      *
      * @throws CacheException if the config is not valid.
      */
-    public function setConfig(string $key, array|null $options = null): static
+    public function setConfig(string $key, array $options): static
     {
         if (array_key_exists($key, $this->config)) {
             throw CacheException::forConfigExists($key);
