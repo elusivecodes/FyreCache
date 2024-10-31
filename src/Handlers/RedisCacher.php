@@ -120,7 +120,7 @@ class RedisCacher extends Cacher
     }
 
     /**
-     * Determine if an item exists in the cache.
+     * Determine whether an item exists in the cache.
      *
      * @param string $key The cache key.
      * @return bool TRUE if the item exists, otherwise FALSE.

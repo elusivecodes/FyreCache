@@ -93,7 +93,7 @@ $config = $cacheManager->getConfig();
 
 **Has Config**
 
-Check if a [*Cacher*](#cachers) config exists.
+Determine whether a [*Cacher*](#cachers) config exists.
 
 - `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `CacheManager::DEFAULT`.
 
@@ -103,7 +103,7 @@ $hasConfig = $cacheManager->hasConfig($key);
 
 **Is Enabled**
 
-Check if the cache is enabled.
+Determine whether the cache is enabled.
 
 ```php
 $cacheManager->isEnabled();
@@ -111,7 +111,7 @@ $cacheManager->isEnabled();
 
 **Is Loaded**
 
-Check if a [*Cacher*](#cachers) instance is loaded.
+Determine whether a [*Cacher*](#cachers) instance is loaded.
 
 - `$key` is a string representing the [*Cacher*](#cachers) key, and will default to `CacheManager::DEFAULT`.
 
@@ -198,7 +198,7 @@ $value = $cacher->get($key);
 
 **Has**
 
-Determine if an item exists in the cache.
+Determine whether an item exists in the cache.
 
 - `$key` is a string representing the cache key.
 
