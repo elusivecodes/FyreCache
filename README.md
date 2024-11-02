@@ -31,11 +31,13 @@ use Fyre\Cache\CacheManager;
 
 ## Basic Usage
 
-- `$config` is an array containing key/value of configuration options.
+- `$container` is a [*Container*](https://github.com/elusivecodes/FyreContainer).
 
 ```php
-$cacheManager = new CacheManager($config);
+$cacheManager = new CacheManager($container);
 ```
+
+Default configuration options will be resolved from the "*Cache*" key in the [*Config*](https://github.com/elusivecodes/FyreConfig) using the [*Container*](https://github.com/elusivecodes/FyreContainer).
 
 
 ## Methods
@@ -49,6 +51,8 @@ Build a [*Cacher*](#cachers).
 ```php
 $cacher = $cacheManager->build($options);
 ```
+
+[*Cacher*](#cachers) dependencies will be resolved automatically from the [*Container*](https://github.com/elusivecodes/FyreContainer).
 
 **Clear**
 
@@ -149,6 +153,8 @@ Load a shared [*Cacher*](#cachers) instance.
 ```php
 $cacher = $cacheManager->use($key);
 ```
+
+[*Cacher*](#cachers) dependencies will be resolved automatically from the [*Container*](https://github.com/elusivecodes/FyreContainer).
 
 
 ## Cachers

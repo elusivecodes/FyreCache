@@ -5,6 +5,8 @@ namespace Fyre\Cache;
 
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\NullCacher;
+use Fyre\Config\Config;
+use Fyre\Container\Container;
 
 use function array_key_exists;
 use function class_exists;
@@ -19,6 +21,8 @@ class CacheManager
 
     protected array $config = [];
 
+    protected Container $container;
+
     protected bool $enabled = true;
 
     protected array $instances = [];
@@ -28,11 +32,16 @@ class CacheManager
     /**
      * New CacheManager constructor.
      *
-     * @param array $config The CacheManager config.
+     * @param Container $container The container.
+     * @param Config $config The Config.
      */
-    public function __construct(array $config = [])
+    public function __construct(Container $container, Config $config)
     {
-        foreach ($config as $key => $options) {
+        $this->container = $container;
+
+        $handlers = $config->get('Cache', []);
+
+        foreach ($handlers as $key => $options) {
             $this->setConfig($key, $options);
         }
     }
@@ -55,7 +64,7 @@ class CacheManager
             throw CacheException::forInvalidClass($options['className']);
         }
 
-        return new $options['className']($options);
+        return $this->container->build($options['className'], ['options' => $options]);
     }
 
     /**

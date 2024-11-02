@@ -7,6 +7,7 @@ use Fyre\Cache\CacheManager;
 use Fyre\Cache\Cacher;
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\MemcachedCacher;
+use Fyre\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Tests\Cacher\DecrementTestTrait;
 use Tests\Cacher\DeleteTestTrait;
@@ -34,10 +35,12 @@ final class MemcachedTest extends TestCase
     {
         $this->expectException(CacheException::class);
 
-        (new CacheManager())->build([
-            'className' => MemcachedCacher::class,
-            'port' => 1234,
-        ]);
+        Container::getInstance()
+            ->use(CacheManager::class)
+            ->build([
+                'className' => MemcachedCacher::class,
+                'port' => 1234,
+            ]);
     }
 
     public function testSize(): void
@@ -60,12 +63,14 @@ final class MemcachedTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->cache = (new CacheManager())->build([
-            'className' => MemcachedCacher::class,
-            'host' => getenv('MEMCACHED_HOST'),
-            'port' => getenv('MEMCACHED_PORT'),
-            'prefix' => 'prefix.',
-        ]);
+        $this->cache = Container::getInstance()
+            ->use(CacheManager::class)
+            ->build([
+                'className' => MemcachedCacher::class,
+                'host' => getenv('MEMCACHED_HOST'),
+                'port' => getenv('MEMCACHED_PORT'),
+                'prefix' => 'prefix.',
+            ]);
     }
 
     protected function tearDown(): void

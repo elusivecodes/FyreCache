@@ -7,6 +7,8 @@ use Fyre\Cache\CacheManager;
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\FileCacher;
 use Fyre\Cache\Handlers\NullCacher;
+use Fyre\Config\Config;
+use Fyre\Container\Container;
 use PHPUnit\Framework\TestCase;
 
 final class CacheManagerTest extends TestCase
@@ -207,7 +209,9 @@ final class CacheManagerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->cache = new CacheManager([
+        $container = new Container();
+        $container->singleton(Config::class);
+        $container->use(Config::class)->set('Cache', [
             'default' => [
                 'className' => FileCacher::class,
                 'path' => 'cache',
@@ -219,5 +223,6 @@ final class CacheManagerTest extends TestCase
                 'prefix' => 'data.',
             ],
         ]);
+        $this->cache = $container->use(CacheManager::class);
     }
 }

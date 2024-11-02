@@ -6,6 +6,7 @@ namespace Tests;
 use Fyre\Cache\CacheManager;
 use Fyre\Cache\Cacher;
 use Fyre\Cache\Handlers\FileCacher;
+use Fyre\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Tests\Cacher\DecrementTestTrait;
 use Tests\Cacher\DeleteTestTrait;
@@ -49,11 +50,13 @@ final class FileTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->cache = (new CacheManager())->build([
-            'className' => FileCacher::class,
-            'path' => 'cache',
-            'prefix' => 'prefix.',
-        ]);
+        $this->cache = Container::getInstance()
+            ->use(CacheManager::class)
+            ->build([
+                'className' => FileCacher::class,
+                'path' => 'cache',
+                'prefix' => 'prefix.',
+            ]);
     }
 
     protected function tearDown(): void

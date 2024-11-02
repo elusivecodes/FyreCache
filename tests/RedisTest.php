@@ -7,6 +7,7 @@ use Fyre\Cache\CacheManager;
 use Fyre\Cache\Cacher;
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\RedisCacher;
+use Fyre\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Tests\Cacher\DecrementTestTrait;
 use Tests\Cacher\DeleteTestTrait;
@@ -34,21 +35,25 @@ final class RedisTest extends TestCase
     {
         $this->expectException(CacheException::class);
 
-        (new CacheManager())->build([
-            'className' => RedisCacher::class,
-            'host' => getenv('REDIS_HOST'),
-            'password' => 'invalid',
-        ]);
+        Container::getInstance()
+            ->use(CacheManager::class)
+            ->build([
+                'className' => RedisCacher::class,
+                'host' => getenv('REDIS_HOST'),
+                'password' => 'invalid',
+            ]);
     }
 
     public function testInvalidConnection(): void
     {
         $this->expectException(CacheException::class);
 
-        (new CacheManager())->build([
-            'className' => RedisCacher::class,
-            'port' => 1234,
-        ]);
+        Container::getInstance()
+            ->use(CacheManager::class)
+            ->build([
+                'className' => RedisCacher::class,
+                'port' => 1234,
+            ]);
     }
 
     public function testSize(): void
@@ -71,14 +76,16 @@ final class RedisTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->cache = (new CacheManager())->build([
-            'className' => RedisCacher::class,
-            'host' => getenv('REDIS_HOST'),
-            'password' => getenv('REDIS_PASSWORD'),
-            'database' => getenv('REDIS_DATABASE'),
-            'port' => getenv('REDIS_PORT'),
-            'prefix' => 'prefix.',
-        ]);
+        $this->cache = Container::getInstance()
+            ->use(CacheManager::class)
+            ->build([
+                'className' => RedisCacher::class,
+                'host' => getenv('REDIS_HOST'),
+                'password' => getenv('REDIS_PASSWORD'),
+                'database' => getenv('REDIS_DATABASE'),
+                'port' => getenv('REDIS_PORT'),
+                'prefix' => 'prefix.',
+            ]);
     }
 
     protected function tearDown(): void

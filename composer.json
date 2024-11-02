@@ -20,6 +20,8 @@
         }
     },
     "require": {
+        "fyre/config": "^4.0",
+        "fyre/container": "^1.0",
         "fyre/filesystem": "^2.0",
         "fyre/path": "^2.0"
     },
