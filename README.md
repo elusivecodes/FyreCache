@@ -283,7 +283,7 @@ The File cacher can be loaded using custom configuration.
     - `mode` is a number indicating the cache file permissions, and will default to *0640*.
 
 ```php
-$cacher = $cacheManager->build($options);
+$container->use(Config::class)->set('Cache.file', $options);
 ```
 
 
@@ -300,7 +300,7 @@ The Memcached cacher can be loaded using custom configuration.
     - `weight` is a number indicating the server weight, and will default to *1*.
 
 ```php
-$cacher = $cacheManager->build($options);
+$container->use(Config::class)->set('Cache.memcached', $options);
 ```
 
 
@@ -319,5 +319,5 @@ The Redis cacher can be loaded using custom configuration.
     - `timeout` is a number indicating the connection timeout.
 
 ```php
-$cacher = $cacheManager->build($options);
+$container->use(Config::class)->set('Cache.redis', $options);
 ```
