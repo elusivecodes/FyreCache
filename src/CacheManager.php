@@ -44,6 +44,8 @@ class CacheManager
         foreach ($handlers as $key => $options) {
             $this->setConfig($key, $options);
         }
+
+        $this->enabled = !$config->get('App.debug');
     }
 
     /**

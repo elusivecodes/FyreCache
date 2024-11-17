@@ -40,6 +40,8 @@ $cacheManager = new CacheManager($container);
 
 Default configuration options will be resolved from the "*Cache*" key in the [*Config*](https://github.com/elusivecodes/FyreConfig).
 
+The cache will be disabled by default if the `"*App.debug*" key is set in the [*Config*](https://github.com/elusivecodes/FyreConfig).
+
 **Autoloading**
 
 It is recommended to bind the *CacheManager* to the [*Container*](https://github.com/elusivecodes/FyreContainer) as a singleton.
