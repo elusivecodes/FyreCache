@@ -319,7 +319,7 @@ The Redis cacher can be loaded using custom configuration.
     - `port` is a number indicating the Redis port, and will default to *6379*.
     - `database` is a string representing the Redis database.
     - `timeout` is a number indicating the connection timeout.
-    - `persis`t` is a boolean indicating whether to use a persistent connection, and will default to *true*.
+    - `persist` is a boolean indicating whether to use a persistent connection, and will default to *true*.
     - `tls` is a boolean indicating whether to use a tls connection, and will default to *true*.
     - `ssl` is an array containing SSL options.
         - `key` is a string representing the path to the key file.
