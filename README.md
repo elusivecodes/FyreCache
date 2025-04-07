@@ -273,6 +273,19 @@ $size = $cacher->size();
 ```
 
 
+## Array
+
+The Array cacher can be loaded using customer configuration.
+
+- `$options` is an array containing configuration options.
+    - `className` must be set to `\Fyre\Cache\Handlers\ArrayCacher`.
+    - `expire` is a number indicating the default cache timeout.
+
+```php
+$container->use(Config::class)->set('Cache.array', $options);
+```
+
+
 ### File
 
 The File cacher can be loaded using custom configuration.
