@@ -194,6 +194,6 @@ class CacheManager
             return $this->nullCacher ??= new NullCacher();
         }
 
-        return $this->instances[$key] ??= static::build($this->config[$key] ?? []);
+        return $this->instances[$key] ??= $this->build($this->config[$key] ?? []);
     }
 }
