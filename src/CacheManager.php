@@ -21,8 +21,6 @@ class CacheManager
 
     protected array $config = [];
 
-    protected Container $container;
-
     protected bool $enabled = true;
 
     protected array $instances = [];
@@ -35,10 +33,10 @@ class CacheManager
      * @param Container $container The container.
      * @param Config $config The Config.
      */
-    public function __construct(Container $container, Config $config)
-    {
-        $this->container = $container;
-
+    public function __construct(
+        protected Container $container,
+        Config $config
+    ) {
         $handlers = $config->get('Cache', []);
 
         foreach ($handlers as $key => $options) {
