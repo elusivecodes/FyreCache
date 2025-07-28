@@ -4,12 +4,16 @@ declare(strict_types=1);
 namespace Tests;
 
 use Fyre\Cache\CacheManager;
+use Fyre\Cache\Cacher;
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\FileCacher;
 use Fyre\Cache\Handlers\NullCacher;
 use Fyre\Config\Config;
 use Fyre\Container\Container;
+use Fyre\Utility\Traits\MacroTrait;
 use PHPUnit\Framework\TestCase;
+
+use function class_uses;
 
 final class CacheManagerTest extends TestCase
 {
@@ -123,6 +127,14 @@ final class CacheManagerTest extends TestCase
 
         $this->assertTrue(
             $this->cache->isLoaded('data')
+        );
+    }
+
+    public function testMacroable(): void
+    {
+        $this->assertContains(
+            MacroTrait::class,
+            class_uses(Cacher::class)
         );
     }
 

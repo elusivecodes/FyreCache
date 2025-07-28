@@ -5,6 +5,7 @@ namespace Fyre\Cache;
 
 use Closure;
 use Fyre\Cache\Exceptions\CacheException;
+use Fyre\Utility\Traits\MacroTrait;
 
 use function array_replace;
 use function strpbrk;
@@ -14,6 +15,8 @@ use function strpbrk;
  */
 abstract class Cacher
 {
+    use MacroTrait;
+
     protected static array $defaults = [
         'expire' => null,
         'prefix' => '',
