@@ -134,6 +134,11 @@ final class CacheManagerTest extends TestCase
     {
         $this->assertContains(
             MacroTrait::class,
+            class_uses(CacheManager::class)
+        );
+
+        $this->assertContains(
+            MacroTrait::class,
             class_uses(Cacher::class)
         );
     }

@@ -7,6 +7,7 @@ use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\NullCacher;
 use Fyre\Config\Config;
 use Fyre\Container\Container;
+use Fyre\Utility\Traits\MacroTrait;
 
 use function array_key_exists;
 use function class_exists;
@@ -17,6 +18,8 @@ use function is_subclass_of;
  */
 class CacheManager
 {
+    use MacroTrait;
+
     public const DEFAULT = 'default';
 
     protected array $config = [];
