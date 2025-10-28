@@ -216,7 +216,7 @@ Delete multiple items from the cache.
 - `$keys` is an array containing the cache keys.
 
 ```php
-$deleted = $cacher->deleteMultiple($key);
+$deleted = $cacher->deleteMultiple($keys);
 ```
 
 **Get**
@@ -238,7 +238,7 @@ Retrieve multiple values from the cache.
 - `$default` is the default value to return, and will default to *null*.
 
 ```php
-$values = $cacher->getMultiple($key, $default);
+$values = $cacher->getMultiple($keys, $default);
 ```
 
 **Has**
