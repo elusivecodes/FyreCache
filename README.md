@@ -180,6 +180,14 @@ You can load a specific cacher by specifying the `className` option of the `$opt
 
 Custom cachers can be created by extending `\Fyre\Cache\Cacher`, ensuring all below methods are implemented.
 
+**Clear**
+
+Clear the cache.
+
+```php
+$cleared = $cacher->clear();
+```
+
 **Decrement**
 
 Decrement a cache value.
@@ -201,12 +209,14 @@ Delete an item from the cache.
 $deleted = $cacher->delete($key);
 ```
 
-**Empty**
+**Delete Multiple**
 
-Empty the cache.
+Delete multiple items from the cache.
+
+- `$keys` is an array containing the cache keys.
 
 ```php
-$emptied = $cacher->empty();
+$deleted = $cacher->deleteMultiple($key);
 ```
 
 **Get**
@@ -214,9 +224,21 @@ $emptied = $cacher->empty();
 Retrieve a value from the cache.
 
 - `$key` is a string representing the cache key.
+- `$default` is the default value to return, and will default to *null*.
 
 ```php
-$value = $cacher->get($key);
+$value = $cacher->get($key, $default);
+```
+
+**Get Multiple**
+
+Retrieve multiple values from the cache.
+
+- `$keys` is an array containing the cache keys.
+- `$default` is the default value to return, and will default to *null*.
+
+```php
+$values = $cacher->getMultiple($key, $default);
 ```
 
 **Has**
@@ -252,16 +274,27 @@ Retrieve an item from the cache, or save a new value if it doesn't exist.
 $value = $cacher->remember($key, $callback, $expire);
 ```
 
-**Save**
+**Set**
 
-Save an item in the cache.
+Set an item in the cache.
 
 - `$key` is a string representing the cache key.
 - `$value` is the value to save in the cache.
 - `$expire` is a number indicating the number of seconds the value will be valid, and will default to *null*.
 
 ```php
-$saved = $cacher->save($key, $value, $expire);
+$saved = $cacher->set($key, $value, $expire);
+```
+
+**Set Multiple**
+
+Set multiple items in the cache.
+
+- `$values` is an array containing the values to save in the cache.
+- `$expire` is a number indicating the number of seconds the value will be valid, and will default to *null*.
+
+```php
+$saved = $cacher->setMultiple($values, $expire);
 ```
 
 **Size**

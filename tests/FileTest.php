@@ -11,10 +11,10 @@ use PHPUnit\Framework\TestCase;
 use Tests\Cacher\DecrementTestTrait;
 use Tests\Cacher\DeleteTestTrait;
 use Tests\Cacher\EmptyTestTrait;
+use Tests\Cacher\GetSetTestTrait;
 use Tests\Cacher\HasTestTrait;
 use Tests\Cacher\IncrementTestTrait;
 use Tests\Cacher\RemembertestTrait;
-use Tests\Cacher\SaveGetTestTrait;
 
 use function rmdir;
 
@@ -23,19 +23,19 @@ final class FileTest extends TestCase
     use DecrementTestTrait;
     use DeleteTestTrait;
     use EmptyTestTrait;
+    use GetSetTestTrait;
     use HasTestTrait;
     use IncrementTestTrait;
     use RemembertestTrait;
-    use SaveGetTestTrait;
 
     protected Cacher $cache;
 
     public function testSize(): void
     {
-        $this->cache->save('test', 'value');
+        $this->cache->set('test', 'value');
 
         $this->assertSame(
-            44,
+            45,
             $this->cache->size()
         );
     }
@@ -61,7 +61,7 @@ final class FileTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->cache->delete('test');
+        $this->cache->clear();
         rmdir('cache');
     }
 }

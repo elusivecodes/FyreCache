@@ -8,7 +8,7 @@ use RuntimeException;
 /**
  * CacheException
  */
-class CacheException extends RuntimeException
+class CacheException extends RuntimeException implements \Psr\SimpleCache\CacheException
 {
     public static function forAuthFailed(): static
     {

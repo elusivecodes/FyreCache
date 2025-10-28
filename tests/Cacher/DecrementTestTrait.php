@@ -9,7 +9,7 @@ trait DecrementTestTrait
 {
     public function testDecrement(): void
     {
-        $this->cache->save('test', 5);
+        $this->cache->set('test', 5);
 
         $this->assertSame(
             4,
@@ -19,7 +19,7 @@ trait DecrementTestTrait
 
     public function testDecrementAmount(): void
     {
-        $this->cache->save('test', 10);
+        $this->cache->set('test', 10);
 
         $this->assertSame(
             5,
@@ -36,7 +36,7 @@ trait DecrementTestTrait
 
     public function testDecrementPersists(): void
     {
-        $this->cache->save('test', 5);
+        $this->cache->set('test', 5);
         $this->cache->decrement('test');
 
         $this->assertSame(

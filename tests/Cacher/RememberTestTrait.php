@@ -9,7 +9,7 @@ trait RememberTestTrait
 {
     public function testRemember(): void
     {
-        $this->cache->save('test', 1);
+        $this->cache->set('test', 1);
 
         $this->assertSame(
             1,

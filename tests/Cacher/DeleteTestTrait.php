@@ -9,7 +9,7 @@ trait DeleteTestTrait
 {
     public function testDelete(): void
     {
-        $this->cache->save('test', 'value');
+        $this->cache->set('test', 'value');
 
         $this->assertTrue(
             $this->cache->delete('test')
@@ -31,6 +31,24 @@ trait DeleteTestTrait
     {
         $this->assertFalse(
             $this->cache->delete('missing')
+        );
+    }
+
+    public function testDeleteMultiple(): void
+    {
+        $this->cache->set('test1', 'value1');
+        $this->cache->set('test2', 'value2');
+
+        $this->assertTrue(
+            $this->cache->deleteMultiple(['test1', 'test2'])
+        );
+
+        $this->assertFalse(
+            $this->cache->has('test1')
+        );
+
+        $this->assertFalse(
+            $this->cache->has('test2')
         );
     }
 }

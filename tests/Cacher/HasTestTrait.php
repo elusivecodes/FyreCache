@@ -9,7 +9,7 @@ trait HasTestTrait
 {
     public function testHas(): void
     {
-        $this->cache->save('test', 1);
+        $this->cache->set('test', 1);
 
         $this->assertTrue(
             $this->cache->has('test')

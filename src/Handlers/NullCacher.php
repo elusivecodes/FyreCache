@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Fyre\Cache\Handlers;
 
+use DateInterval;
 use Fyre\Cache\Cacher;
 
 /**
@@ -10,6 +11,16 @@ use Fyre\Cache\Cacher;
  */
 class NullCacher extends Cacher
 {
+    /**
+     * Clear the cache.
+     *
+     * @return bool TRUE if the cache was cleared, otherwise FALSE.
+     */
+    public function clear(): bool
+    {
+        return true;
+    }
+
     /**
      * Delete an item from the cache.
      *
@@ -22,22 +33,13 @@ class NullCacher extends Cacher
     }
 
     /**
-     * Empty the cache.
-     *
-     * @return bool TRUE if the cache was cleared, otherwise FALSE.
-     */
-    public function empty(): bool
-    {
-        return true;
-    }
-
-    /**
      * Retrieve a value from the cache.
      *
      * @param string $key The cache key.
+     * @param mixed $default The default value.
      * @return mixed The cache value.
      */
-    public function get(string $key): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
         return null;
     }
@@ -55,14 +57,14 @@ class NullCacher extends Cacher
     }
 
     /**
-     * Save an item in the cache.
+     * Set an item in the cache.
      *
      * @param string $key The cache key.
      * @param mixed $data The data to cache.
-     * @param int|null $expire The number of seconds the value will be valid.
+     * @param DateInterval|int|null $expire The number of seconds the value will be valid.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
-    public function save(string $key, mixed $data, int|null $expire = null): bool
+    public function set(string $key, mixed $data, DateInterval|int|null $expire = null): bool
     {
         return true;
     }

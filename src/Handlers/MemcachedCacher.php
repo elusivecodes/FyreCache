@@ -3,10 +3,18 @@ declare(strict_types=1);
 
 namespace Fyre\Cache\Handlers;
 
+use DateInterval;
 use Exception;
 use Fyre\Cache\Cacher;
 use Fyre\Cache\Exceptions\CacheException;
 use Memcached;
+
+use function array_combine;
+use function array_keys;
+use function array_map;
+use function get_debug_info;
+use function in_array;
+use function iterator_to_array;
 
 /**
  * MemcachedCacher
@@ -54,11 +62,41 @@ class MemcachedCacher extends Cacher
     }
 
     /**
+     * Get the debug info of the object.
+     *
+     * @return array The debug info.
+     */
+    public function __debugInfo(): array
+    {
+        $data = get_object_vars($this);
+
+        foreach (['host', 'port'] as $key) {
+            if (!$data['config'][$key]) {
+                continue;
+            }
+
+            $data['config'][$key] = '*****';
+        }
+
+        return $data;
+    }
+
+    /**
      * Cacher destructor.
      */
     public function __destruct()
     {
         $this->connection->quit();
+    }
+
+    /**
+     * Clear the cache.
+     *
+     * @return bool TRUE if the cache was cleared, otherwise FALSE.
+     */
+    public function clear(): bool
+    {
+        return $this->connection->flush();
     }
 
     /**
@@ -89,29 +127,39 @@ class MemcachedCacher extends Cacher
     }
 
     /**
-     * Empty the cache.
+     * Delete multiple items from the cache.
      *
-     * @return bool TRUE if the cache was cleared, otherwise FALSE.
+     * @param iterable $keys The cache keys.
+     * @return bool TRUE if the items were deleted, otherwise FALSE.
      */
-    public function empty(): bool
+    public function deleteMultiple(iterable $keys): bool
     {
-        return $this->connection->flush();
+        $keys = iterator_to_array($keys);
+        $keys = array_map(
+            fn(string $key): string => $this->prepareKey($key),
+            $keys
+        );
+
+        $result = $this->connection->deleteMulti($keys);
+
+        return !in_array(false, $result, true);
     }
 
     /**
      * Retrieve a value from the cache.
      *
      * @param string $key The cache key.
+     * @param mixed $default The default value.
      * @return mixed The cache value.
      */
-    public function get(string $key): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
         $key = $this->prepareKey($key);
 
         $value = $this->connection->get($key);
 
         if ($this->connection->getResultCode() === Memcached::RES_NOTFOUND) {
-            return null;
+            return $default;
         }
 
         return $value;
@@ -132,18 +180,39 @@ class MemcachedCacher extends Cacher
     }
 
     /**
-     * Save an item in the cache.
+     * Set an item in the cache.
      *
      * @param string $key The cache key.
-     * @param int|null $expire The number of seconds the value will be valid.
+     * @param DateInterval|int|null $expire The number of seconds the value will be valid.
      * @param mixed $data The data to cache.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
-    public function save(string $key, mixed $value, int|null $expire = null): bool
+    public function set(string $key, mixed $value, DateInterval|int|null $expire = null): bool
     {
         $key = $this->prepareKey($key);
 
-        return $this->connection->set($key, $value, $expire ?? 0);
+        return $this->connection->set($key, $value, $this->getExpires($expire) ?? 0);
+    }
+
+    /**
+     * Set multiple items in the cache.
+     *
+     * @param iterable $values The cache values.
+     * @param DateInterval|int|null $expire The number of seconds the value will be valid.
+     * @return bool TRUE if the values were saved, otherwise FALSE.
+     */
+    public function setMultiple(iterable $values, DateInterval|int|null $expire = null): bool
+    {
+        $values = iterator_to_array($values);
+        $keys = array_keys($values);
+        $keys = array_map(
+            fn(string $key): string => $this->prepareKey($key),
+            $keys
+        );
+
+        $values = array_combine($keys, $values);
+
+        return $this->connection->setMulti($values, $this->getExpires($expire) ?? 0);
     }
 
     /**

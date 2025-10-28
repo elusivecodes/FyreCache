@@ -7,11 +7,11 @@ trait EmptyTestTrait
 {
     public function testEmpty(): void
     {
-        $this->cache->save('test1', 'value');
-        $this->cache->save('test2', 'value');
+        $this->cache->set('test1', 'value');
+        $this->cache->set('test2', 'value');
 
         $this->assertTrue(
-            $this->cache->empty()
+            $this->cache->clear()
         );
 
         $this->assertFalse(

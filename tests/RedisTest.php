@@ -9,13 +9,14 @@ use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\RedisCacher;
 use Fyre\Container\Container;
 use PHPUnit\Framework\TestCase;
+use Redis;
 use Tests\Cacher\DecrementTestTrait;
 use Tests\Cacher\DeleteTestTrait;
 use Tests\Cacher\EmptyTestTrait;
+use Tests\Cacher\GetSetTestTrait;
 use Tests\Cacher\HasTestTrait;
 use Tests\Cacher\IncrementTestTrait;
 use Tests\Cacher\RemembertestTrait;
-use Tests\Cacher\SaveGetTestTrait;
 
 use function getenv;
 
@@ -24,12 +25,47 @@ final class RedisTest extends TestCase
     use DecrementTestTrait;
     use DeleteTestTrait;
     use EmptyTestTrait;
+    use GetSetTestTrait;
     use HasTestTrait;
     use IncrementTestTrait;
     use RemembertestTrait;
-    use SaveGetTestTrait;
 
     protected Cacher $cache;
+
+    public function testDebug(): void
+    {
+        $data = $this->cache->__debugInfo();
+
+        $this->assertInstanceOf(
+            Redis::class,
+            $data['connection']
+        );
+
+        unset($data['connection']);
+
+        $this->assertSame(
+            [
+                'config' => [
+                    'expire' => null,
+                    'prefix' => 'prefix.',
+                    'host' => '*****',
+                    'password' => '',
+                    'port' => '*****',
+                    'database' => '',
+                    'timeout' => 0,
+                    'persist' => true,
+                    'tls' => false,
+                    'ssl' => [
+                        'key' => null,
+                        'cert' => null,
+                        'ca' => null,
+                    ],
+                    'className' => RedisCacher::class,
+                ],
+            ],
+            $data
+        );
+    }
 
     public function testInvalidAuth(): void
     {
@@ -58,10 +94,10 @@ final class RedisTest extends TestCase
 
     public function testSize(): void
     {
-        $this->cache->save('test', 'value');
+        $this->cache->set('test', 'value');
 
         $this->assertSame(
-            859296,
+            873328,
             $this->cache->size()
         );
     }
@@ -69,7 +105,7 @@ final class RedisTest extends TestCase
     public function testSizeEmpty(): void
     {
         $this->assertSame(
-            859152,
+            873184,
             $this->cache->size()
         );
     }
@@ -90,6 +126,6 @@ final class RedisTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->cache->empty();
+        $this->cache->clear();
     }
 }

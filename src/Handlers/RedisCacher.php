@@ -3,14 +3,18 @@ declare(strict_types=1);
 
 namespace Fyre\Cache\Handlers;
 
+use DateInterval;
 use Fyre\Cache\Cacher;
 use Fyre\Cache\Exceptions\CacheException;
 use Redis;
 use RedisException;
 
+use function array_map;
+use function count;
+use function get_object_vars;
 use function gettype;
+use function iterator_to_array;
 use function serialize;
-use function time;
 use function unserialize;
 
 /**
@@ -89,7 +93,39 @@ class RedisCacher extends Cacher
      */
     public function __destruct()
     {
-        $this->connection->close();
+        if (!$this->config['persist']) {
+            $this->connection->close();
+        }
+    }
+
+    /**
+     * Get the debug info of the object.
+     *
+     * @return array The debug info.
+     */
+    public function __debugInfo(): array
+    {
+        $data = get_object_vars($this);
+
+        foreach (['host', 'password', 'port', 'database'] as $key) {
+            if (!$data['config'][$key]) {
+                continue;
+            }
+
+            $data['config'][$key] = '*****';
+        }
+
+        return $data;
+    }
+
+    /**
+     * Clear the cache.
+     *
+     * @return bool TRUE if the cache was cleared, otherwise FALSE.
+     */
+    public function clear(): bool
+    {
+        return $this->connection->flushDB(false);
     }
 
     /**
@@ -102,26 +138,34 @@ class RedisCacher extends Cacher
     {
         $key = $this->prepareKey($key);
 
-        return $this->connection->del($key) === 1;
+        return $this->connection->del($key) > 0;
     }
 
     /**
-     * Empty the cache.
+     * Delete multiple items from the cache.
      *
-     * @return bool TRUE if the cache was cleared, otherwise FALSE.
+     * @param iterable $keys The cache keys.
+     * @return bool TRUE if the items were deleted, otherwise FALSE.
      */
-    public function empty(): bool
+    public function deleteMultiple(iterable $keys): bool
     {
-        return $this->connection->flushDB();
+        $keys = iterator_to_array($keys);
+        $keys = array_map(
+            fn(string $key): string => $this->prepareKey($key),
+            $keys
+        );
+
+        return $this->connection->del($keys) >= count($keys);
     }
 
     /**
      * Retrieve a value from the cache.
      *
      * @param string $key The cache key.
+     * @param mixed $default The default value.
      * @return mixed The cache value.
      */
-    public function get(string $key): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
         $key = $this->prepareKey($key);
 
@@ -140,7 +184,7 @@ class RedisCacher extends Cacher
             case 'string':
                 return (string) $data['value'];
             default:
-                return null;
+                return $default;
         }
     }
 
@@ -175,14 +219,14 @@ class RedisCacher extends Cacher
     }
 
     /**
-     * Save an item in the cache.
+     * set an item in the cache.
      *
      * @param string $key The cache key.
-     * @param int|null $expire The number of seconds the value will be valid.
+     * @param DateInterval|int|null $expire The number of seconds the value will be valid.
      * @param mixed $data The data to cache.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
-    public function save(string $key, mixed $value, int|null $expire = null): bool
+    public function set(string $key, mixed $value, DateInterval|int|null $expire = null): bool
     {
         $key = $this->prepareKey($key);
 
@@ -205,8 +249,10 @@ class RedisCacher extends Cacher
 
         $this->connection->hMSet($key, ['type' => $type, 'value' => $value]);
 
-        if ($expire) {
-            $this->connection->expireAt($key, time() + $expire);
+        $expires = $this->getExpires($expire);
+
+        if ($expires !== null) {
+            $this->connection->expireAt($key, $expires);
         }
 
         return true;

@@ -85,7 +85,7 @@ final class CacheManagerTest extends TestCase
                 ],
                 'data' => [
                     'className' => FileCacher::class,
-                    'path' => 'data',
+                    'path' => 'cache',
                     'prefix' => 'data.',
                 ],
             ],
@@ -98,7 +98,7 @@ final class CacheManagerTest extends TestCase
         $this->assertSame(
             [
                 'className' => FileCacher::class,
-                'path' => 'data',
+                'path' => 'cache',
                 'prefix' => 'data.',
             ],
             $this->cache->getConfig('data')
@@ -236,7 +236,7 @@ final class CacheManagerTest extends TestCase
             ],
             'data' => [
                 'className' => FileCacher::class,
-                'path' => 'data',
+                'path' => 'cache',
                 'prefix' => 'data.',
             ],
         ]);

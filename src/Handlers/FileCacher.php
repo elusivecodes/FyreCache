@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Fyre\Cache\Handlers;
 
+use DateInterval;
 use Fyre\Cache\Cacher;
 use Fyre\FileSystem\Exceptions\FileSystemException;
 use Fyre\FileSystem\File;
@@ -39,6 +40,18 @@ class FileCacher extends Cacher
     }
 
     /**
+     * Clear the cache.
+     *
+     * @return bool TRUE if the cache was cleared, otherwise FALSE.
+     */
+    public function clear(): bool
+    {
+        $this->folder->empty();
+
+        return true;
+    }
+
+    /**
      * Delete an item from the cache.
      *
      * @param string $key The cache key.
@@ -61,30 +74,23 @@ class FileCacher extends Cacher
     }
 
     /**
-     * Empty the cache.
-     *
-     * @return bool TRUE if the cache was cleared, otherwise FALSE.
-     */
-    public function empty(): bool
-    {
-        $this->folder->empty();
-
-        return true;
-    }
-
-    /**
      * Retrieve a value from the cache.
      *
      * @param string $key The cache key.
+     * @param mixed $default The default value.
      * @return mixed The cache value.
      */
-    public function get(string $key): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
         $file = $this->getFile($key);
 
+        if (!$file) {
+            return $default;
+        }
+
         $file->open('r');
 
-        $value = $this->readData($file);
+        $value = $this->readData($file, $default);
 
         $file->close();
 
@@ -104,7 +110,7 @@ class FileCacher extends Cacher
      */
     public function increment(string $key, int $amount = 1): int
     {
-        $file = $this->getFile($key);
+        $file = $this->getFile($key, true);
 
         $file->open('c');
         $file->lock();
@@ -128,16 +134,16 @@ class FileCacher extends Cacher
     }
 
     /**
-     * Save an item in the cache.
+     * Set an item in the cache.
      *
      * @param string $key The cache key.
      * @param mixed $data The data to cache.
-     * @param int|null $expire The number of seconds the value will be valid.
+     * @param DateInterval|int|null $expire The number of seconds the value will be valid.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
-    public function save(string $key, mixed $data, int|null $expire = null): bool
+    public function set(string $key, mixed $data, DateInterval|int|null $expire = null): bool
     {
-        $file = $this->getFile($key);
+        $file = $this->getFile($key, true);
 
         $file->open('w');
         $file->lock();
@@ -163,14 +169,19 @@ class FileCacher extends Cacher
      * Open a cache file (or create it if it doesn't exist).
      *
      * @param string $key The cache key.
-     * @return File The File.
+     * @param bool $create Whether to create the file.
+     * @return File|null The File.
      */
-    protected function getFile(string $key): File
+    protected function getFile(string $key, bool $create = false): File|null
     {
         $key = $this->prepareKey($key);
         $filePath = Path::join($this->folder->path(), $key);
 
-        $file = new File($filePath, true);
+        $file = new File($filePath, $create);
+
+        if (!$create && !$file->exists()) {
+            return null;
+        }
 
         $file->chmod($this->config['mode']);
 
@@ -181,26 +192,27 @@ class FileCacher extends Cacher
      * Read data from a File.
      *
      * @param File $file The File.
+     * @param mixed $default The default value.
      * @return mixed The file data.
      */
-    protected function readData(File $file): mixed
+    protected function readData(File $file, mixed $default = null): mixed
     {
         try {
             $contents = $file->contents();
 
             if (!$contents) {
-                return null;
+                return $default;
             }
 
             $data = unserialize($contents);
 
-            if ($data['expire'] && $data['expire'] <= time()) {
-                return null;
+            if ($data['expires'] !== null && $data['expires'] <= time()) {
+                return $default;
             }
 
             return $data['data'];
         } catch (FileSystemException $e) {
-            return null;
+            return $default;
         }
     }
 
@@ -209,19 +221,19 @@ class FileCacher extends Cacher
      *
      * @param File $file The File.
      * @param mixed $data The data to cache.
-     * @param int|null $expire The number of seconds the value will be valid.
+     * @param DateInterval|int|null $expire The number of seconds the value will be valid.
      */
-    protected function writeData(File $file, mixed $data, int|null $expire = null): void
+    protected function writeData(File $file, mixed $data, DateInterval|int|null $expire = null): void
     {
-        $expire ??= $this->config['expire'];
+        $expires = $this->getExpires($expire);
 
-        if ($expire) {
-            $expire += time();
+        if ($expires !== null) {
+            $expires += time();
         }
 
         $data = serialize([
             'data' => $data,
-            'expire' => $expire,
+            'expires' => $expires,
         ]);
 
         $file->write($data);

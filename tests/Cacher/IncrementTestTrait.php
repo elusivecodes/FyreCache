@@ -25,7 +25,7 @@ trait IncrementTestTrait
 
     public function testIncrementExisting(): void
     {
-        $this->cache->save('test', 5);
+        $this->cache->set('test', 5);
         $this->cache->increment('test');
 
         $this->assertSame(

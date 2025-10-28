@@ -8,14 +8,15 @@ use Fyre\Cache\Cacher;
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\MemcachedCacher;
 use Fyre\Container\Container;
+use Memcached;
 use PHPUnit\Framework\TestCase;
 use Tests\Cacher\DecrementTestTrait;
 use Tests\Cacher\DeleteTestTrait;
 use Tests\Cacher\EmptyTestTrait;
+use Tests\Cacher\GetSetTestTrait;
 use Tests\Cacher\HasTestTrait;
 use Tests\Cacher\IncrementTestTrait;
 use Tests\Cacher\RemembertestTrait;
-use Tests\Cacher\SaveGetTestTrait;
 
 use function getenv;
 
@@ -24,12 +25,38 @@ final class MemcachedTest extends TestCase
     use DecrementTestTrait;
     use DeleteTestTrait;
     use EmptyTestTrait;
+    use GetSetTestTrait;
     use HasTestTrait;
     use IncrementTestTrait;
     use RemembertestTrait;
-    use SaveGetTestTrait;
 
     protected Cacher $cache;
+
+    public function testDebug(): void
+    {
+        $data = $this->cache->__debugInfo();
+
+        $this->assertInstanceOf(
+            Memcached::class,
+            $data['connection']
+        );
+
+        unset($data['connection']);
+
+        $this->assertSame(
+            [
+                'config' => [
+                    'expire' => null,
+                    'prefix' => 'prefix.',
+                    'host' => '*****',
+                    'port' => '*****',
+                    'weight' => 1,
+                    'className' => MemcachedCacher::class,
+                ],
+            ],
+            $data
+        );
+    }
 
     public function testInvalidConnection(): void
     {
@@ -45,7 +72,7 @@ final class MemcachedTest extends TestCase
 
     public function testSize(): void
     {
-        $this->cache->save('test', 'value');
+        $this->cache->set('test', 'value');
 
         $this->assertSame(
             75,
@@ -75,6 +102,6 @@ final class MemcachedTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->cache->empty();
+        $this->cache->clear();
     }
 }

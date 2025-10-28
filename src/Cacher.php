@@ -4,16 +4,21 @@ declare(strict_types=1);
 namespace Fyre\Cache;
 
 use Closure;
+use DateInterval;
+use DateTimeImmutable;
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Utility\Traits\MacroTrait;
+use Psr\SimpleCache\CacheInterface;
+use stdClass;
 
 use function array_replace;
+use function is_int;
 use function strpbrk;
 
 /**
  * Cacher
  */
-abstract class Cacher
+abstract class Cacher implements CacheInterface
 {
     use MacroTrait;
 
@@ -33,6 +38,13 @@ abstract class Cacher
     {
         $this->config = array_replace(self::$defaults, static::$defaults, $options);
     }
+
+    /**
+     * Clear the cache.
+     *
+     * @return bool TRUE if the cache was cleared, otherwise FALSE.
+     */
+    abstract public function clear(): bool;
 
     /**
      * Decrement a cache value.
@@ -55,19 +67,31 @@ abstract class Cacher
     abstract public function delete(string $key): bool;
 
     /**
-     * Empty the cache.
+     * Delete multiple items from the cache.
      *
-     * @return bool TRUE if the cache was cleared, otherwise FALSE.
+     * @param iterable $keys The cache keys.
+     * @return bool TRUE if the items were deleted, otherwise FALSE.
      */
-    abstract public function empty(): bool;
+    public function deleteMultiple(iterable $keys): bool
+    {
+        $result = true;
+        foreach ($keys as $key) {
+            if (!$this->delete($key)) {
+                $result = false;
+            }
+        }
+
+        return $result;
+    }
 
     /**
      * Retrieve a value from the cache.
      *
      * @param string $key The cache key.
+     * @param mixed $default The default value.
      * @return mixed The cache value.
      */
-    abstract public function get(string $key): mixed;
+    abstract public function get(string $key, mixed $default = null): mixed;
 
     /**
      * Get the config.
@@ -77,6 +101,24 @@ abstract class Cacher
     public function getConfig(): array
     {
         return $this->config;
+    }
+
+    /**
+     * Retrieve multiple values from the cache.
+     *
+     * @param iterable $keys The cache keys.
+     * @param mixed $default The default value.
+     * @return iterable The cache values.
+     */
+    public function getMultiple(iterable $keys, mixed $default = null): iterable
+    {
+        $results = [];
+
+        foreach ($keys as $key) {
+            $results[$key] = $this->get($key, $default);
+        }
+
+        return $results;
     }
 
     /**
@@ -104,33 +146,53 @@ abstract class Cacher
      *
      * @param string $key The cache key.
      * @param Closure $callback The callback method to generate the value.
-     * @param int|null $expire The number of seconds the value will be valid.
+     * @param DateInterval|int|null $expire The number of seconds the value will be valid.
      * @return mixed The cache value.
      */
-    public function remember(string $key, Closure $callback, int|null $expire = null): mixed
+    public function remember(string $key, Closure $callback, DateInterval|int|null $expire = null): mixed
     {
-        $value = $this->get($key);
+        $test = new stdClass();
 
-        if ($value !== null) {
+        $value = $this->get($key, $test);
+
+        if ($value !== $test) {
             return $value;
         }
 
         $value = $callback();
 
-        $this->save($key, $value, $expire);
+        $this->set($key, $value, $expire);
 
         return $value;
     }
 
     /**
-     * Save an item in the cache.
+     * Set an item in the cache.
      *
      * @param string $key The cache key.
      * @param mixed $data The data to cache.
-     * @param int|null $expire The number of seconds the value will be valid.
+     * @param DateInterval|int|null $expire The number of seconds the value will be valid.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
-    abstract public function save(string $key, mixed $data, int|null $expire = null): bool;
+    abstract public function set(string $key, mixed $data, DateInterval|int|null $expire = null): bool;
+
+    /**
+     * Set multiple items in the cache.
+     *
+     * @param iterable $values The cache values.
+     * @param DateInterval|int|null $expire The number of seconds the value will be valid.
+     * @return bool TRUE if the values were saved, otherwise FALSE.
+     */
+    public function setMultiple(iterable $values, DateInterval|int|null $expire = null): bool
+    {
+        foreach ($values as $key => $value) {
+            if (!$this->set($key, $value, $expire)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     /**
      * Get the size of the cache.
@@ -138,6 +200,28 @@ abstract class Cacher
      * @return int The size of the cache (in bytes).
      */
     abstract public function size(): int;
+
+    /**
+     * Get the expires timestamp.
+     *
+     * @param DateInterval|int|null $expire The number of seconds the value will be valid.
+     * @return int|null The expires timestamp.
+     */
+    protected function getExpires(DateInterval|int|null $expire): int|null
+    {
+        if ($expire === null) {
+            return $this->config['expire'];
+        }
+
+        if (is_int($expire)) {
+            return $expire;
+        }
+
+        $start = new DateTimeImmutable();
+        $end = $start->add($expire);
+
+        return $end->getTimestamp() - $start->getTimestamp();
+    }
 
     /**
      * Get the real cache key.
