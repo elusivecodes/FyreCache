@@ -5,6 +5,7 @@ namespace Fyre\Cache\Handlers;
 
 use DateInterval;
 use Fyre\Cache\Cacher;
+use Override;
 
 use function array_key_exists;
 use function array_reduce;
@@ -24,6 +25,7 @@ class ArrayCacher extends Cacher
      *
      * @return bool TRUE if the cache was cleared, otherwise FALSE.
      */
+    #[Override]
     public function clear(): bool
     {
         $this->cache = [];
@@ -37,6 +39,7 @@ class ArrayCacher extends Cacher
      * @param string $key The cache key.
      * @return bool TRUE if the item was deleted, otherwise FALSE.
      */
+    #[Override]
     public function delete(string $key): bool
     {
         $key = $this->prepareKey($key);
@@ -57,6 +60,7 @@ class ArrayCacher extends Cacher
      * @param mixed $default The default value.
      * @return mixed The cache value.
      */
+    #[Override]
     public function get(string $key, mixed $default = null): mixed
     {
         $key = $this->prepareKey($key);
@@ -83,6 +87,7 @@ class ArrayCacher extends Cacher
      * @param int $amount The amount to increment.
      * @return int The new value.
      */
+    #[Override]
     public function increment(string $key, int $amount = 1): int
     {
         if ($this->get($key) === null) {
@@ -103,6 +108,7 @@ class ArrayCacher extends Cacher
      * @param DateInterval|int|null $expire The number of seconds the value will be valid.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
+    #[Override]
     public function set(string $key, mixed $data, DateInterval|int|null $expire = null): bool
     {
         $key = $this->prepareKey($key);
@@ -126,6 +132,7 @@ class ArrayCacher extends Cacher
      *
      * @return int The size of the cache (in bytes).
      */
+    #[Override]
     public function size(): int
     {
         return array_reduce(

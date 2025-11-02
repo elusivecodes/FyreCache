@@ -8,7 +8,6 @@ use Fyre\Cache\Cacher;
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\MemcachedCacher;
 use Fyre\Container\Container;
-use Memcached;
 use PHPUnit\Framework\TestCase;
 use Tests\Cacher\DecrementTestTrait;
 use Tests\Cacher\DeleteTestTrait;
@@ -35,13 +34,6 @@ final class MemcachedTest extends TestCase
     public function testDebug(): void
     {
         $data = $this->cache->__debugInfo();
-
-        $this->assertInstanceOf(
-            Memcached::class,
-            $data['connection']
-        );
-
-        unset($data['connection']);
 
         $this->assertSame(
             [

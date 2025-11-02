@@ -52,7 +52,6 @@ final class ArrayTest extends TestCase
             ->use(CacheManager::class)
             ->build([
                 'className' => ArrayCacher::class,
-                'path' => 'cache',
                 'prefix' => 'prefix.',
             ]);
     }

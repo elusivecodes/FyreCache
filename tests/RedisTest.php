@@ -9,7 +9,6 @@ use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Cache\Handlers\RedisCacher;
 use Fyre\Container\Container;
 use PHPUnit\Framework\TestCase;
-use Redis;
 use Tests\Cacher\DecrementTestTrait;
 use Tests\Cacher\DeleteTestTrait;
 use Tests\Cacher\EmptyTestTrait;
@@ -35,13 +34,6 @@ final class RedisTest extends TestCase
     public function testDebug(): void
     {
         $data = $this->cache->__debugInfo();
-
-        $this->assertInstanceOf(
-            Redis::class,
-            $data['connection']
-        );
-
-        unset($data['connection']);
 
         $this->assertSame(
             [

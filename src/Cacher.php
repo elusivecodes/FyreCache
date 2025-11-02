@@ -8,6 +8,7 @@ use DateInterval;
 use DateTimeImmutable;
 use Fyre\Cache\Exceptions\CacheException;
 use Fyre\Utility\Traits\MacroTrait;
+use Override;
 use Psr\SimpleCache\CacheInterface;
 use stdClass;
 
@@ -40,13 +41,6 @@ abstract class Cacher implements CacheInterface
     }
 
     /**
-     * Clear the cache.
-     *
-     * @return bool TRUE if the cache was cleared, otherwise FALSE.
-     */
-    abstract public function clear(): bool;
-
-    /**
      * Decrement a cache value.
      *
      * @param string $key The cache key.
@@ -59,19 +53,12 @@ abstract class Cacher implements CacheInterface
     }
 
     /**
-     * Delete an item from the cache.
-     *
-     * @param string $key The cache key.
-     * @return bool TRUE if the item was deleted, otherwise FALSE.
-     */
-    abstract public function delete(string $key): bool;
-
-    /**
      * Delete multiple items from the cache.
      *
      * @param iterable $keys The cache keys.
      * @return bool TRUE if the items were deleted, otherwise FALSE.
      */
+    #[Override]
     public function deleteMultiple(iterable $keys): bool
     {
         $result = true;
@@ -83,15 +70,6 @@ abstract class Cacher implements CacheInterface
 
         return $result;
     }
-
-    /**
-     * Retrieve a value from the cache.
-     *
-     * @param string $key The cache key.
-     * @param mixed $default The default value.
-     * @return mixed The cache value.
-     */
-    abstract public function get(string $key, mixed $default = null): mixed;
 
     /**
      * Get the config.
@@ -110,6 +88,7 @@ abstract class Cacher implements CacheInterface
      * @param mixed $default The default value.
      * @return iterable The cache values.
      */
+    #[Override]
     public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         $results = [];
@@ -127,6 +106,7 @@ abstract class Cacher implements CacheInterface
      * @param string $key The cache key.
      * @return bool TRUE if the item exists, otherwise FALSE.
      */
+    #[Override]
     public function has(string $key): bool
     {
         return $this->get($key) !== null;
@@ -167,22 +147,13 @@ abstract class Cacher implements CacheInterface
     }
 
     /**
-     * Set an item in the cache.
-     *
-     * @param string $key The cache key.
-     * @param mixed $data The data to cache.
-     * @param DateInterval|int|null $expire The number of seconds the value will be valid.
-     * @return bool TRUE if the value was saved, otherwise FALSE.
-     */
-    abstract public function set(string $key, mixed $data, DateInterval|int|null $expire = null): bool;
-
-    /**
      * Set multiple items in the cache.
      *
      * @param iterable $values The cache values.
      * @param DateInterval|int|null $expire The number of seconds the value will be valid.
      * @return bool TRUE if the values were saved, otherwise FALSE.
      */
+    #[Override]
     public function setMultiple(iterable $values, DateInterval|int|null $expire = null): bool
     {
         foreach ($values as $key => $value) {

@@ -30,6 +30,24 @@ final class FileTest extends TestCase
 
     protected Cacher $cache;
 
+    public function testDebug(): void
+    {
+        $data = $this->cache->__debugInfo();
+
+        $this->assertSame(
+            [
+                'config' => [
+                    'expire' => null,
+                    'prefix' => 'prefix.',
+                    'path' => 'cache',
+                    'mode' => 0640,
+                    'className' => FileCacher::class,
+                ],
+            ],
+            $data
+        );
+    }
+
     public function testSize(): void
     {
         $this->cache->set('test', 'value');

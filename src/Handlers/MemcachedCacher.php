@@ -8,11 +8,12 @@ use Exception;
 use Fyre\Cache\Cacher;
 use Fyre\Cache\Exceptions\CacheException;
 use Memcached;
+use Override;
 
 use function array_combine;
 use function array_keys;
 use function array_map;
-use function get_debug_info;
+use function get_object_vars;
 use function in_array;
 use function iterator_to_array;
 
@@ -62,6 +63,14 @@ class MemcachedCacher extends Cacher
     }
 
     /**
+     * Cacher destructor.
+     */
+    public function __destruct()
+    {
+        $this->connection->quit();
+    }
+
+    /**
      * Get the debug info of the object.
      *
      * @return array The debug info.
@@ -78,15 +87,9 @@ class MemcachedCacher extends Cacher
             $data['config'][$key] = '*****';
         }
 
-        return $data;
-    }
+        unset($data['connection']);
 
-    /**
-     * Cacher destructor.
-     */
-    public function __destruct()
-    {
-        $this->connection->quit();
+        return $data;
     }
 
     /**
@@ -94,6 +97,7 @@ class MemcachedCacher extends Cacher
      *
      * @return bool TRUE if the cache was cleared, otherwise FALSE.
      */
+    #[Override]
     public function clear(): bool
     {
         return $this->connection->flush();
@@ -106,6 +110,7 @@ class MemcachedCacher extends Cacher
      * @param int $amount The amount to decrement.
      * @return int The new value.
      */
+    #[Override]
     public function decrement(string $key, int $amount = 1): int
     {
         $key = $this->prepareKey($key);
@@ -119,6 +124,7 @@ class MemcachedCacher extends Cacher
      * @param string $key The cache key.
      * @return bool TRUE if the item was deleted, otherwise FALSE.
      */
+    #[Override]
     public function delete(string $key): bool
     {
         $key = $this->prepareKey($key);
@@ -132,6 +138,7 @@ class MemcachedCacher extends Cacher
      * @param iterable $keys The cache keys.
      * @return bool TRUE if the items were deleted, otherwise FALSE.
      */
+    #[Override]
     public function deleteMultiple(iterable $keys): bool
     {
         $keys = iterator_to_array($keys);
@@ -152,6 +159,7 @@ class MemcachedCacher extends Cacher
      * @param mixed $default The default value.
      * @return mixed The cache value.
      */
+    #[Override]
     public function get(string $key, mixed $default = null): mixed
     {
         $key = $this->prepareKey($key);
@@ -172,6 +180,7 @@ class MemcachedCacher extends Cacher
      * @param int $amount The amount to increment.
      * @return int The new value.
      */
+    #[Override]
     public function increment(string $key, int $amount = 1): int
     {
         $key = $this->prepareKey($key);
@@ -187,6 +196,7 @@ class MemcachedCacher extends Cacher
      * @param mixed $data The data to cache.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
+    #[Override]
     public function set(string $key, mixed $value, DateInterval|int|null $expire = null): bool
     {
         $key = $this->prepareKey($key);
@@ -201,6 +211,7 @@ class MemcachedCacher extends Cacher
      * @param DateInterval|int|null $expire The number of seconds the value will be valid.
      * @return bool TRUE if the values were saved, otherwise FALSE.
      */
+    #[Override]
     public function setMultiple(iterable $values, DateInterval|int|null $expire = null): bool
     {
         $values = iterator_to_array($values);
@@ -220,6 +231,7 @@ class MemcachedCacher extends Cacher
      *
      * @return int The size of the cache (in bytes).
      */
+    #[Override]
     public function size(): int
     {
         $stats = $this->getStats();

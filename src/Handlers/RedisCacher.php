@@ -6,6 +6,7 @@ namespace Fyre\Cache\Handlers;
 use DateInterval;
 use Fyre\Cache\Cacher;
 use Fyre\Cache\Exceptions\CacheException;
+use Override;
 use Redis;
 use RedisException;
 
@@ -115,6 +116,8 @@ class RedisCacher extends Cacher
             $data['config'][$key] = '*****';
         }
 
+        unset($data['connection']);
+
         return $data;
     }
 
@@ -123,6 +126,7 @@ class RedisCacher extends Cacher
      *
      * @return bool TRUE if the cache was cleared, otherwise FALSE.
      */
+    #[Override]
     public function clear(): bool
     {
         return $this->connection->flushDB(false);
@@ -134,6 +138,7 @@ class RedisCacher extends Cacher
      * @param string $key The cache key.
      * @return bool TRUE if the item was deleted, otherwise FALSE.
      */
+    #[Override]
     public function delete(string $key): bool
     {
         $key = $this->prepareKey($key);
@@ -147,6 +152,7 @@ class RedisCacher extends Cacher
      * @param iterable $keys The cache keys.
      * @return bool TRUE if the items were deleted, otherwise FALSE.
      */
+    #[Override]
     public function deleteMultiple(iterable $keys): bool
     {
         $keys = iterator_to_array($keys);
@@ -165,6 +171,7 @@ class RedisCacher extends Cacher
      * @param mixed $default The default value.
      * @return mixed The cache value.
      */
+    #[Override]
     public function get(string $key, mixed $default = null): mixed
     {
         $key = $this->prepareKey($key);
@@ -194,6 +201,7 @@ class RedisCacher extends Cacher
      * @param string $key The cache key.
      * @return bool TRUE if the item exists, otherwise FALSE.
      */
+    #[Override]
     public function has(string $key): bool
     {
         $key = $this->prepareKey($key);
@@ -208,6 +216,7 @@ class RedisCacher extends Cacher
      * @param int $amount The amount to increment.
      * @return int The new value.
      */
+    #[Override]
     public function increment(string $key, int $amount = 1): int
     {
         $key = $this->prepareKey($key);
@@ -226,6 +235,7 @@ class RedisCacher extends Cacher
      * @param mixed $data The data to cache.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
+    #[Override]
     public function set(string $key, mixed $value, DateInterval|int|null $expire = null): bool
     {
         $key = $this->prepareKey($key);
@@ -263,6 +273,7 @@ class RedisCacher extends Cacher
      *
      * @return int The size of the cache (in bytes).
      */
+    #[Override]
     public function size(): int
     {
         $info = $this->connection->info();

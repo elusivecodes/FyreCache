@@ -9,7 +9,9 @@ use Fyre\FileSystem\Exceptions\FileSystemException;
 use Fyre\FileSystem\File;
 use Fyre\FileSystem\Folder;
 use Fyre\Utility\Path;
+use Override;
 
+use function get_object_vars;
 use function is_numeric;
 use function serialize;
 use function time;
@@ -40,10 +42,25 @@ class FileCacher extends Cacher
     }
 
     /**
+     * Get the debug info of the object.
+     *
+     * @return array The debug info.
+     */
+    public function __debugInfo(): array
+    {
+        $data = get_object_vars($this);
+
+        unset($data['folder']);
+
+        return $data;
+    }
+
+    /**
      * Clear the cache.
      *
      * @return bool TRUE if the cache was cleared, otherwise FALSE.
      */
+    #[Override]
     public function clear(): bool
     {
         $this->folder->empty();
@@ -57,6 +74,7 @@ class FileCacher extends Cacher
      * @param string $key The cache key.
      * @return bool TRUE if the item was deleted, otherwise FALSE.
      */
+    #[Override]
     public function delete(string $key): bool
     {
         $key = $this->prepareKey($key);
@@ -80,6 +98,7 @@ class FileCacher extends Cacher
      * @param mixed $default The default value.
      * @return mixed The cache value.
      */
+    #[Override]
     public function get(string $key, mixed $default = null): mixed
     {
         $file = $this->getFile($key);
@@ -108,6 +127,7 @@ class FileCacher extends Cacher
      * @param int $amount The amount to increment.
      * @return int The new value.
      */
+    #[Override]
     public function increment(string $key, int $amount = 1): int
     {
         $file = $this->getFile($key, true);
@@ -141,6 +161,7 @@ class FileCacher extends Cacher
      * @param DateInterval|int|null $expire The number of seconds the value will be valid.
      * @return bool TRUE if the value was saved, otherwise FALSE.
      */
+    #[Override]
     public function set(string $key, mixed $data, DateInterval|int|null $expire = null): bool
     {
         $file = $this->getFile($key, true);
@@ -160,6 +181,7 @@ class FileCacher extends Cacher
      *
      * @return int The size of the cache (in bytes).
      */
+    #[Override]
     public function size(): int
     {
         return $this->folder->size();
